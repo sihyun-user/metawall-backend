@@ -26,9 +26,11 @@ exports.uploadImage = catchAsync(async(req, res, next) => {
     type: 'base64',
     album: process.env.IMGUR_ALBUM_ID
   });
+  
+  if (response.data.link)
+  return appError({statusCode: 400, message:'上傳圖片失敗'}, next);
 
   let data = await IMAGE.create({ url: response.data.link });
-
   data = { url: data.url };
 
   appSuccess({res, data, message: '上傳圖片成功'});
