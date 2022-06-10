@@ -5,7 +5,7 @@
     "description": "範例生成文件",
     "version": "1.0.0"
   },
-  "host": "https://intense-lake-77359.herokuapp.com",
+  "host": "intense-lake-77359.herokuapp.com",
   "basePath": "/",
   "schemes": [
     "http",
@@ -321,30 +321,6 @@
         ]
       }
     },
-    "/api/user/comments": {
-      "get": {
-        "tags": [
-          "User - 會員按讚追蹤"
-        ],
-        "description": "取得個人留言貼文名單 API",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "留言貼文資訊",
-            "schema": {
-              "$ref": "#/definitions/getFollowUserList"
-            }
-          }
-        },
-        "security": [
-          {
-            "api_key": [
-              "apiKeyAuth"
-            ]
-          }
-        ]
-      }
-    },
     "/api/user/{user_id}/follow": {
       "post": {
         "tags": [
@@ -387,10 +363,8 @@
             ]
           }
         ]
-      }
-    },
-    "/api/user/{user_id}/unfollow": {
-      "post": {
+      },
+      "delete": {
         "tags": [
           "User - 會員按讚追蹤"
         ],
@@ -416,6 +390,116 @@
                 "message": {
                   "type": "string",
                   "example": "取消追蹤成功"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "api_key": [
+              "apiKeyAuth"
+            ]
+          }
+        ]
+      }
+    },
+    "/api/user/comments": {
+      "get": {
+        "tags": [
+          "User - 會員按讚追蹤"
+        ],
+        "description": "取得個人留言名單 API",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "留言資訊",
+            "schema": {
+              "$ref": "#/definitions/getFollowUserList"
+            }
+          }
+        },
+        "security": [
+          {
+            "api_key": [
+              "apiKeyAuth"
+            ]
+          }
+        ]
+      }
+    },
+    "/api/user/comment/{comment_id}": {
+      "delete": {
+        "tags": [
+          "User - 會員按讚追蹤"
+        ],
+        "description": "編輯一則個人留言 API",
+        "parameters": [
+          {
+            "name": "comment_id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "留言資訊",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "boolean",
+                  "example": true
+                },
+                "message": {
+                  "type": "string",
+                  "example": "編輯留言成功"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "api_key": [
+              "apiKeyAuth"
+            ]
+          }
+        ]
+      },
+      "patch": {
+        "tags": [
+          "User - 會員按讚追蹤"
+        ],
+        "description": "刪除一則個人留言 API",
+        "parameters": [
+          {
+            "name": "comment_id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "留言資訊",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "boolean",
+                  "example": true
+                },
+                "message": {
+                  "type": "string",
+                  "example": "刪除留言成功"
                 }
               },
               "xml": {
@@ -535,7 +619,29 @@
           "200": {
             "description": "貼文資訊",
             "schema": {
-              "$ref": "#/definitions/createPost"
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "boolean",
+                  "example": true
+                },
+                "message": {
+                  "type": "string",
+                  "example": "新增一則貼文成功"
+                },
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "newPostId": {
+                      "type": "string",
+                      "example": "新增貼文ID"
+                    }
+                  }
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
             }
           }
         },
@@ -815,56 +921,6 @@
         ]
       }
     },
-    "/api/post/{post_id}/comment/{comment_id}": {
-      "delete": {
-        "tags": [
-          "Post - 貼文"
-        ],
-        "description": "刪除一則貼文的留言 API",
-        "parameters": [
-          {
-            "name": "post_id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "comment_id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "貼文留言資訊",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "status": {
-                  "type": "boolean",
-                  "example": true
-                },
-                "message": {
-                  "type": "string",
-                  "example": "刪除貼文留言成功"
-                }
-              },
-              "xml": {
-                "name": "main"
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "api_key": [
-              "apiKeyAuth"
-            ]
-          }
-        ]
-      }
-    },
     "/api/uploads": {
       "get": {
         "tags": [
@@ -877,41 +933,6 @@
             "description": "圖片資訊",
             "schema": {
               "$ref": "#/definitions/getImages"
-            }
-          }
-        },
-        "security": [
-          {
-            "api_key": [
-              "apiKeyAuth"
-            ]
-          }
-        ]
-      },
-      "delete": {
-        "tags": [
-          "Upload - 圖片"
-        ],
-        "description": "刪除全部圖片 API",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "圖片資訊",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "status": {
-                  "type": "boolean",
-                  "example": true
-                },
-                "message": {
-                  "type": "string",
-                  "example": "刪除所有圖片成功"
-                }
-              },
-              "xml": {
-                "name": "main"
-              }
             }
           }
         },
@@ -958,7 +979,29 @@
           "200": {
             "description": "圖片資訊",
             "schema": {
-              "$ref": "#/definitions/uploadImage"
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "boolean",
+                  "example": true
+                },
+                "message": {
+                  "type": "string",
+                  "example": "上傳圖片成功"
+                },
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "url": {
+                      "type": "string",
+                      "example": "圖片網址"
+                    }
+                  }
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
             }
           }
         },
@@ -1349,6 +1392,47 @@
                   "type": "string"
                 }
               },
+              "comments": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "_id": {
+                      "type": "string",
+                      "example": "留言ID"
+                    },
+                    "user": {
+                      "type": "object",
+                      "properties": {
+                        "_id": {
+                          "type": "string",
+                          "example": "會員ID"
+                        },
+                        "name": {
+                          "type": "string",
+                          "example": "會員名"
+                        },
+                        "photo": {
+                          "type": "string",
+                          "example": "頭貼網址"
+                        }
+                      }
+                    },
+                    "post": {
+                      "type": "string",
+                      "example": "貼文ID"
+                    },
+                    "comment": {
+                      "type": "string",
+                      "example": "留言內容"
+                    },
+                    "createdAt": {
+                      "type": "string",
+                      "example": "留言時間"
+                    }
+                  }
+                }
+              },
               "createdAt": {
                 "type": "string",
                 "example": "貼文建立時間"
@@ -1410,95 +1494,50 @@
                 "type": "string"
               }
             },
-            "createdAt": {
-              "type": "string",
-              "example": "貼文建立時間"
-            }
-          }
-        }
-      }
-    },
-    "createPost": {
-      "type": "object",
-      "properties": {
-        "status": {
-          "type": "boolean",
-          "example": true
-        },
-        "message": {
-          "type": "string",
-          "example": "新增一則貼文成功"
-        },
-        "data": {
-          "type": "object",
-          "properties": {
-            "_id": {
-              "type": "string",
-              "example": "貼文ID"
-            },
-            "user": {
-              "type": "object",
-              "properties": {
-                "_id": {
-                  "type": "string",
-                  "example": "會員ID"
-                },
-                "name": {
-                  "type": "string",
-                  "example": "會員名"
-                },
-                "photo": {
-                  "type": "string",
-                  "example": "頭貼網址"
+            "comments": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "_id": {
+                    "type": "string",
+                    "example": "留言ID"
+                  },
+                  "user": {
+                    "type": "object",
+                    "properties": {
+                      "_id": {
+                        "type": "string",
+                        "example": "會員ID"
+                      },
+                      "name": {
+                        "type": "string",
+                        "example": "會員名"
+                      },
+                      "photo": {
+                        "type": "string",
+                        "example": "頭貼網址"
+                      }
+                    }
+                  },
+                  "post": {
+                    "type": "string",
+                    "example": "貼文ID"
+                  },
+                  "comment": {
+                    "type": "string",
+                    "example": "留言內容"
+                  },
+                  "createdAt": {
+                    "type": "string",
+                    "example": "留言時間"
+                  }
                 }
               }
             },
-            "content": {
-              "type": "string",
-              "example": "貼文內容"
-            },
-            "image": {
-              "type": "string",
-              "example": "圖片網址"
-            },
-            "likes": {
-              "type": "array",
-              "example": [
-                "會員ID"
-              ],
-              "items": {
-                "type": "string"
-              }
-            },
             "createdAt": {
               "type": "string",
               "example": "貼文建立時間"
-            }
-          }
-        }
-      }
-    },
-    "uploadImage": {
-      "type": "object",
-      "properties": {
-        "status": {
-          "type": "boolean",
-          "example": true
-        },
-        "data": {
-          "type": "object",
-          "properties": {
-            "_id": {
-              "type": "string",
-              "example": "圖片ID"
-            },
-            "url": {
-              "type": "string",
-              "example": "圖片網址"
-            },
-            "createdAt": {
-              "type": "string",
-              "example": "建立時間"
             }
           }
         }
@@ -1526,7 +1565,7 @@
               },
               "createdAt": {
                 "type": "string",
-                "example": "建立時間"
+                "example": "圖片建立時間"
               }
             }
           }

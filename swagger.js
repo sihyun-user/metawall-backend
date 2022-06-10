@@ -121,6 +121,17 @@ const doc = {
         content: '貼文內容',
         image: '圖片網址',
         likes: ['會員ID'],
+        comments: [{
+          _id: '留言ID',
+          user: {
+            _id: '會員ID',
+            name: '會員名',
+            photo: '頭貼網址'
+          },
+          post: '貼文ID',
+          comment: '留言內容',
+          createdAt: '留言時間'
+        }],
         createdAt: '貼文建立時間'
       }]
     },
@@ -137,31 +148,18 @@ const doc = {
         content: '貼文內容',
         image: '圖片網址',
         likes: ['會員ID'],
+        comments: [{
+          _id: '留言ID',
+          user: {
+            _id: '會員ID',
+            name: '會員名',
+            photo: '頭貼網址'
+          },
+          post: '貼文ID',
+          comment: '留言內容',
+          createdAt: '留言時間'
+        }],
         createdAt: '貼文建立時間'
-      }
-    },
-    createPost: {
-      status: true,
-      message: '新增一則貼文成功',
-      data: {
-        _id: '貼文ID',
-        user: {
-          _id: '會員ID',
-          name: '會員名',
-          photo: '頭貼網址'
-        },
-        content: '貼文內容',
-        image: '圖片網址',
-        likes: ['會員ID'],
-        createdAt: '貼文建立時間'
-      }
-    },
-    uploadImage: {
-      status: true,
-      data: {
-        _id: '圖片ID',
-        url: '圖片網址',
-        createdAt: '建立時間'
       }
     },
     getImages: {
@@ -169,7 +167,7 @@ const doc = {
       data: [{
         _id: '圖片ID',
         url: '圖片網址',
-        createdAt: '建立時間'
+        createdAt: '圖片建立時間'
       }]
     }
   }
