@@ -12,8 +12,9 @@ exports.getAllImage = catchAsync(async(req, res, next) => {
 
 // 上傳圖片
 exports.uploadImage = catchAsync(async(req, res, next) => {
-  if (!req.files.length)
-  return appError({statusCode: 400, message:'尚未上傳檔案'}, next);
+  if (!req.files.length) {
+    return appError({statusCode: 400, message:'尚未上傳檔案'}, next);
+  };
 
   const client = new ImgurClient({
     clientId: process.env.IMGUR_CLIENT_ID,
@@ -27,8 +28,9 @@ exports.uploadImage = catchAsync(async(req, res, next) => {
     album: process.env.IMGUR_ALBUM_ID
   });
   
-  if (response.data.link)
-  return appError({statusCode: 400, message:'上傳圖片失敗'}, next);
+  if (!response.data.link) {
+    return appError({statusCode: 400, message:'上傳圖片失敗'}, next);
+  }
 
   let data = await IMAGE.create({ url: response.data.link });
   data = { url: data.url };
