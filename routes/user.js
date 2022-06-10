@@ -127,7 +127,7 @@ router
   .route('/user/likes')
   .get(isAuth, 
     /*
-      #swagger.tags = ['User - 會員按讚追蹤']
+      #swagger.tags = ['User - 會員留言按讚追蹤']
       #swagger.description = '取得個人按讚貼文名單 API'
       #swagger.security = [{'api_key': ['apiKeyAuth']}]  
       #swagger.responses[200] = { 
@@ -140,7 +140,7 @@ router
 
 router.get('/user/follows', isAuth, 
   /*
-    #swagger.tags = ['User - 會員按讚追蹤']
+    #swagger.tags = ['User - 會員留言按讚追蹤']
     #swagger.description = '取得個人追蹤名單 API'
     #swagger.security = [{'api_key': ['apiKeyAuth']}]  
     #swagger.responses[200] = { 
@@ -157,7 +157,7 @@ router
   .route('/user/:user_id/follow')
   .post(isAuth, 
     /*
-      #swagger.tags = ['User - 會員按讚追蹤']
+      #swagger.tags = ['User - 會員留言按讚追蹤']
       #swagger.description = '追蹤朋友 API'
       #swagger.security = [{'api_key': ['apiKeyAuth']}]  
       #swagger.responses[200] = { 
@@ -172,7 +172,7 @@ router
   )
   .delete(isAuth, 
     /*
-      #swagger.tags = ['User - 會員按讚追蹤']
+      #swagger.tags = ['User - 會員留言按讚追蹤']
       #swagger.description = '取消追蹤朋友 API'
       #swagger.security = [{'api_key': ['apiKeyAuth']}]  
       #swagger.responses[200] = { 
@@ -190,7 +190,7 @@ router
 
 router.get('/user/comments', isAuth, 
   /*
-    #swagger.tags = ['User - 會員按讚追蹤']
+    #swagger.tags = ['User - 會員留言按讚追蹤']
     #swagger.description = '取得個人留言名單 API'
     #swagger.security = [{'api_key': ['apiKeyAuth']}]  
     #swagger.responses[200] = { 
@@ -205,7 +205,7 @@ router
   .route('/user/comment/:comment_id')
   .patch(isAuth,
     /*
-      #swagger.tags = ['User - 會員按讚追蹤']
+      #swagger.tags = ['User - 會員留言按讚追蹤']
       #swagger.description = '刪除一則個人留言 API'
       #swagger.security = [{'api_key': ['apiKeyAuth']}]  
       #swagger.responses[200] = {
@@ -220,7 +220,7 @@ router
   )
   .delete(isAuth,
     /*
-      #swagger.tags = ['User - 會員按讚追蹤']
+      #swagger.tags = ['User - 會員留言按讚追蹤']
       #swagger.description = '編輯一則個人留言 API'
       #swagger.security = [{'api_key': ['apiKeyAuth']}]  
       #swagger.responses[200] = {

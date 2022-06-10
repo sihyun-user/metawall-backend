@@ -276,7 +276,7 @@
     "/api/user/likes": {
       "get": {
         "tags": [
-          "User - 會員按讚追蹤"
+          "User - 會員留言按讚追蹤"
         ],
         "description": "取得個人按讚貼文名單 API",
         "parameters": [],
@@ -300,7 +300,7 @@
     "/api/user/follows": {
       "get": {
         "tags": [
-          "User - 會員按讚追蹤"
+          "User - 會員留言按讚追蹤"
         ],
         "description": "取得個人追蹤名單 API",
         "parameters": [],
@@ -324,7 +324,7 @@
     "/api/user/{user_id}/follow": {
       "post": {
         "tags": [
-          "User - 會員按讚追蹤"
+          "User - 會員留言按讚追蹤"
         ],
         "description": "追蹤朋友 API",
         "parameters": [
@@ -366,7 +366,7 @@
       },
       "delete": {
         "tags": [
-          "User - 會員按讚追蹤"
+          "User - 會員留言按讚追蹤"
         ],
         "description": "取消追蹤朋友 API",
         "parameters": [
@@ -410,7 +410,7 @@
     "/api/user/comments": {
       "get": {
         "tags": [
-          "User - 會員按讚追蹤"
+          "User - 會員留言按讚追蹤"
         ],
         "description": "取得個人留言名單 API",
         "parameters": [],
@@ -434,7 +434,7 @@
     "/api/user/comment/{comment_id}": {
       "delete": {
         "tags": [
-          "User - 會員按讚追蹤"
+          "User - 會員留言按讚追蹤"
         ],
         "description": "編輯一則個人留言 API",
         "parameters": [
@@ -476,7 +476,7 @@
       },
       "patch": {
         "tags": [
-          "User - 會員按讚追蹤"
+          "User - 會員留言按讚追蹤"
         ],
         "description": "刪除一則個人留言 API",
         "parameters": [
