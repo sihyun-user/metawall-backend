@@ -5,7 +5,7 @@ const doc = {
     title: 'Meta API', // 文件名稱
     description: '範例生成文件' // 文件描述
   },
-  host: 'localhost:3005', // (重要) 本地: localhost:3005 | heroku: fast-mountain-34375.herokuapp.com
+  host: 'intense-lake-77359.herokuapp.com', // (重要) 本地: localhost:3005 | heroku: intense-lake-77359.herokuapp.com
   schemes: ['http', 'https'], // swagger文件支援哪幾種模式
   securityDefinitions: {
     api_key: {
