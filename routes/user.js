@@ -121,7 +121,7 @@ router
     UserControllers.updateProfile
   )
 
-// 會員按讚追蹤動態
+// 會員按讚動態
 
 router
   .route('/user/likes')
@@ -151,49 +151,87 @@ router.get('/user/follows', isAuth,
   UserControllers.getFollowUserList
 );
 
+// 會員追蹤動態
+
+router
+  .route('/user/:user_id/follow')
+  .post(isAuth, 
+    /*
+      #swagger.tags = ['User - 會員按讚追蹤']
+      #swagger.description = '追蹤朋友 API'
+      #swagger.security = [{'api_key': ['apiKeyAuth']}]  
+      #swagger.responses[200] = { 
+        description: '追蹤資訊',
+        schema: { 
+          status: true,
+          message: '追蹤成功'
+        }
+      }
+    */
+    UserControllers.followUser
+  )
+  .delete(isAuth, 
+    /*
+      #swagger.tags = ['User - 會員按讚追蹤']
+      #swagger.description = '取消追蹤朋友 API'
+      #swagger.security = [{'api_key': ['apiKeyAuth']}]  
+      #swagger.responses[200] = { 
+        description: '追蹤資訊',
+        schema: { 
+          status: true,
+          message: '取消追蹤成功'
+        }
+      }
+    */
+    UserControllers.unfollowUser
+  );
+
+// 會員留言動態
+
 router.get('/user/comments', isAuth, 
   /*
     #swagger.tags = ['User - 會員按讚追蹤']
-    #swagger.description = '取得個人留言貼文名單 API'
+    #swagger.description = '取得個人留言名單 API'
     #swagger.security = [{'api_key': ['apiKeyAuth']}]  
     #swagger.responses[200] = { 
-      description: '留言貼文資訊',
+      description: '留言資訊',
       schema: { $ref: '#/definitions/getFollowUserList' }
     }
   */
   UserControllers.getCommentPostList
 );
 
-router.post('/user/:user_id/follow', isAuth, 
-  /*
-    #swagger.tags = ['User - 會員按讚追蹤']
-    #swagger.description = '追蹤朋友 API'
-    #swagger.security = [{'api_key': ['apiKeyAuth']}]  
-    #swagger.responses[200] = { 
-      description: '追蹤資訊',
-      schema: { 
-        status: true,
-        message: '追蹤成功'
+router
+  .route('/user/comment/:comment_id')
+  .patch(isAuth,
+    /*
+      #swagger.tags = ['User - 會員按讚追蹤']
+      #swagger.description = '刪除一則個人留言 API'
+      #swagger.security = [{'api_key': ['apiKeyAuth']}]  
+      #swagger.responses[200] = {
+        description: '留言資訊',
+        schema: {
+          status: true,
+          message: '刪除留言成功'
+        }
       }
-    }
-  */
-  UserControllers.followUser
-);
-
-router.post('/user/:user_id/unfollow', isAuth, 
-  /*
-    #swagger.tags = ['User - 會員按讚追蹤']
-    #swagger.description = '取消追蹤朋友 API'
-    #swagger.security = [{'api_key': ['apiKeyAuth']}]  
-    #swagger.responses[200] = { 
-      description: '追蹤資訊',
-      schema: { 
-        status: true,
-        message: '取消追蹤成功'
+    */
+    UserControllers.updatePostComment
+  )
+  .delete(isAuth,
+    /*
+      #swagger.tags = ['User - 會員按讚追蹤']
+      #swagger.description = '編輯一則個人留言 API'
+      #swagger.security = [{'api_key': ['apiKeyAuth']}]  
+      #swagger.responses[200] = {
+        description: '留言資訊',
+        schema: {
+          status: true,
+          message: '編輯留言成功'
+        }
       }
-    }
-  */
-  UserControllers.unfollowUser
-);
+    */
+    UserControllers.canclePostComment
+  );
 
 module.exports = router;
