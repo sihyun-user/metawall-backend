@@ -27,13 +27,9 @@ exports.uploadImage = catchAsync(async(req, res, next) => {
     album: process.env.IMGUR_ALBUM_ID
   });
 
-  const data = await IMAGE.create({ url: response.data.link });
+  let data = await IMAGE.create({ url: response.data.link });
 
-  appSuccess({res, data});
-})
+  data = { url: data.url };
 
-// 刪除所有圖片
-exports.deleteAllImage = catchAsync(async(req, res, next) => {
-  await IMAGE.deleteMany();
-  appSuccess({res, message:'刪除所有圖片成功'});
+  appSuccess({res, data, message: '上傳圖片成功'});
 })
