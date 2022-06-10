@@ -60,7 +60,13 @@ router
       }
       #swagger.responses[200] = { 
         description: '貼文資訊',
-        schema: { $ref: '#/definitions/createPost' }
+        schema: {
+          status: true,
+          message: '新增一則貼文成功',
+          data: {
+            newPostId: '新增貼文ID'
+          }
+        }
       }
     */
     PostControllers.createPost
@@ -168,22 +174,6 @@ router.post('/post/:post_id/comment', isAuth,
     }
   */
   PostControllers.craetePostComment
-);
-
-router.delete('/post/:post_id/comment/:comment_id', isAuth, 
-  /*
-    #swagger.tags = ['Post - 貼文']
-    #swagger.description = '刪除一則貼文的留言 API'
-    #swagger.security = [{'api_key': ['apiKeyAuth']}]  
-    #swagger.responses[200] = {
-      description: '貼文留言資訊',
-      schema: {
-        status: true,
-        message: '刪除貼文留言成功'
-      }
-    }
-  */
-  PostControllers.canclePostComment
 );
 
 module.exports = router

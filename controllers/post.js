@@ -44,7 +44,12 @@ exports.getUserPosts = catchAsync(async(req, res, next) => {
   const user= await User.findById(userID);
   if (!user) return appError(apiState.DATA_NOT_FOUND, next);
 
-  const data = await Post.find({ user: userID }).exec();
+  const data = await Post.find({ user: userID }).populate({
+    path: 'user',
+    select: 'name photo'
+  }).populate({
+    path: 'comments'
+  }).exec();
 
   appSuccess({ res, data });
 });
@@ -76,11 +81,13 @@ exports.createPost = catchAsync(async(req, res, next) => {
 
   if (!content) return appError(apiState.DATA_MISSING, next);
 
-  const data = await Post.create({
+  let data = await Post.create({
     user: req.user._id, 
     content, 
     image
   });
+  
+  data = { newPostId: data._id };
 
   appSuccess({res, data, message: '新增一則貼文成功'});
 });
@@ -161,37 +168,22 @@ exports.canclePostLike = catchAsync(async(req, res, next) => {
 
 // 新增一則貼文的留言 API 
 exports.craetePostComment = catchAsync(async(req, res, next) => {
-  const user = req.user._id;
-  const post =  req.params.post_id;
+  const userId = req.user._id;
+  const postId =  req.params.post_id;
   const { comment } = req.body;
 
   if (!comment) return (apiState.DATA_NOT_FOUND, next);
 
   // 檢查 ObjectId 型別是否有誤
-  if (post && !checkId(post)) {
+  if (postId && !checkId(postId)) {
     return appError(apiState.ID_ERROR, next);
   };
 
   await Comment.create({
-    post, user, comment
+    user: userId,
+    post: postId,
+    comment
   });
 
   appSuccess({ res, message: '貼文留言成功' })
-});
-
-// 刪除一則貼文的留言 API
-exports.canclePostComment = catchAsync(async(req, res, next) => {
-  const user = req.user._id;
-  const post =  req.params.post_id;
-
-  // 檢查 ObjectId 型別是否有誤
-  if (post && !checkId(post)) {
-    return appError(apiState.ID_ERROR, next);
-  };
-
-  const data = await Comment.find()
-
-  // await Comment.findByIdAndDelete(post);
-
-  appSuccess({ res, data, message: '刪除貼文留言成功' });
 });
