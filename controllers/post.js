@@ -102,7 +102,6 @@ exports.deleteOnePost = catchAsync(async(req, res, next) => {
   }
 
   const post = await Post.findByIdAndDelete(postId);
-
   if (!post) return appError(apiState.DATA_NOT_FOUND, next);
   
   appSuccess({res, message:'刪除一則貼文成功'});
@@ -156,6 +155,9 @@ exports.craetePostComment = catchAsync(async(req, res, next) => {
   if (postId && !checkId(postId)) {
     return appError(apiState.ID_ERROR, next);
   };
+
+  const post = await Post.findById(postId);
+  if (!post) return appError(apiState.DATA_NOT_FOUND, next); 
 
   await Comment.create({
     user: userId,
