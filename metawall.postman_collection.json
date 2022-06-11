@@ -145,7 +145,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"name\": \"yuri\",\r\n    \"sex\": \"female\",\r\n    \"photo\": \"\"\r\n}",
+							"raw": "{\r\n    \"name\": \"yuri\",\r\n    \"sex\": \"female\",\r\n    \"photo\": \"https://i.imgur.com/EmkzRND.jpg\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -170,6 +170,43 @@
 		{
 			"name": "會員留言按讚追蹤",
 			"item": [
+				{
+					"name": "取得個人貼文名單",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/user/profile/{{user_id}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"user",
+								"profile",
+								"{{user_id}}"
+							]
+						}
+					},
+					"response": []
+				},
 				{
 					"name": "取得個人按讚貼文名單",
 					"request": {
@@ -412,42 +449,6 @@
 					"response": []
 				},
 				{
-					"name": "取得會員貼文",
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "{{token}}",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{url}}/posts/{{user_id}}",
-							"host": [
-								"{{url}}"
-							],
-							"path": [
-								"posts",
-								"{{user_id}}"
-							]
-						}
-					},
-					"response": []
-				},
-				{
 					"name": "取得一則貼文",
 					"protocolProfileBehavior": {
 						"disableBodyPruning": true
@@ -569,13 +570,13 @@
 							}
 						},
 						"url": {
-							"raw": "{{url}}/post/{{psot_id}}",
+							"raw": "{{url}}/post/{{post_id}}",
 							"host": [
 								"{{url}}"
 							],
 							"path": [
 								"post",
-								"{{psot_id}}"
+								"{{post_id}}"
 							]
 						}
 					},
@@ -644,7 +645,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"comment\":\"熱到要融化了~\"\r\n}",
+							"raw": "{\r\n    \"comment\":\"融化了~\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
