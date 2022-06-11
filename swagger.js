@@ -110,7 +110,7 @@ const doc = {
     },
     getPosts: {
       status: true,
-      message: '取得貼文列表成功',
+      message: '取得貼文名單成功',
       data: [{
         _id: '貼文ID',
         user: {

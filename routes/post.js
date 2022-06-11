@@ -28,19 +28,6 @@ router.get('/posts', isAuth,
   PostControllers.getAllPosts
 );
 
-router.get('/posts/:user_id', isAuth, 
-  /*
-    #swagger.tags= ['Post - 貼文']
-    #swagger.description = '取得會員貼文 API'
-    #swagger.security = [{'api_key': ['apiKeyAuth']}]
-    #swagger.responses[200] = { 
-      description: '貼文資訊',
-      schema: { $ref: '#/definitions/getPosts' }
-    }
-  */
-  PostControllers.getUserPosts
-);
-
 router
   .route('/post')
   .post(isAuth,

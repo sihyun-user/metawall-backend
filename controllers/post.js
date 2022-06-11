@@ -32,28 +32,6 @@ exports.getAllPosts = catchAsync(async(req, res, next) => {
   appSuccess({res, data, message: '取得貼文列表成功'});
 });
 
-// 取得會員貼文 API
-exports.getUserPosts = catchAsync(async(req, res, next) => {
-  const userID = req.params.user_id;
-
-  // 檢查 ObjectId 型別是否有誤
-  if (userID && !checkId(userID)) {
-    return appError(apiState.ID_ERROR, next);
-  };
-
-  const user= await User.findById(userID);
-  if (!user) return appError(apiState.DATA_NOT_FOUND, next);
-
-  const data = await Post.find({ user: userID }).populate({
-    path: 'user',
-    select: 'name photo'
-  }).populate({
-    path: 'comments'
-  }).exec();
-
-  appSuccess({ res, data });
-});
-
 // 取得一則貼文 API
 exports.getOnePost = catchAsync(async(req, res, next) => {
   const postId = req.params.post_id;

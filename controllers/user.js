@@ -16,6 +16,10 @@ exports.signup = catchAsync(async(req, res, next) => {
   if (!email || !password || !confirmPassword || !name) {
     return appError(apiState.DATA_MISSING, next);
   };
+  // 暱稱2個字元以上
+  if (!validator.isLength(name, {min:2})) {
+    return appError({statusCode: 400, message:'暱稱字數低於2碼'}, next);
+  };
   // 密碼正確
   if (password !== confirmPassword) {
     return appError({statusCode: 400, message:'密碼不一致'}, next);
@@ -44,20 +48,24 @@ exports.signup = catchAsync(async(req, res, next) => {
 // 登入 API
 exports.login = catchAsync(async(req, res, next) => {
   let { email, password } = req.body;
-  
-  if (!email || !password) 
-  return appError(apiState.DATA_MISSING, next);
+  // 內容不為空
+  if (!email || !password) {
+    return appError(apiState.DATA_MISSING, next);
+  }
+  // 是否為Email
+  if (!validator.isEmail(email)) {
+    return appError({statusCode: 400, message:'E-mail格式錯誤'}, next);
+  };
+  // 密碼8碼以上
+  if (!validator.isLength(password, {min:8})) {
+    return appError({statusCode: 400, message:'密碼字數低於8碼'}, next);
+  };
 
   const user = await User.findOne({ email }).select('+password').exec();
-
-  if (!user) {
-    return appError({statusCode: 400, message:'E-mail帳號錯誤'}, next);
-  }
+  if (!user) return appError({statusCode: 400, message:'E-mail帳號錯誤'}, next);
 
   const auth = await bcrypt.compare(password, user.password);
-  if (!auth) {
-    return appError({statusCode: 400, message:'密碼錯誤'}, next);
-  }
+  if (!auth) return appError({statusCode: 400, message:'密碼錯誤'}, next);
   
   const token = await generateSendJWT(user, res);
   const { _id, name, photo, sex } = user;
@@ -124,6 +132,28 @@ exports.updateProfile = catchAsync(async(req, res, next) => {
   },{runValidators: true}).exec();
 
   appSuccess({res, message: '編輯會員資料成功'})
+});
+
+// 取得個人貼文名單 API
+exports.getUserPosts = catchAsync(async(req, res, next) => {
+  const userID = req.params.user_id;
+
+  // 檢查 ObjectId 型別是否有誤
+  if (userID && !checkId(userID)) {
+    return appError(apiState.ID_ERROR, next);
+  };
+
+  const user= await User.findById(userID);
+  if (!user) return appError(apiState.DATA_NOT_FOUND, next);
+
+  const data = await Post.find({ user: userID }).populate({
+    path: 'user',
+    select: 'name photo'
+  }).populate({
+    path: 'comments'
+  }).exec();
+
+  appSuccess({ res, data, message: '取得貼文名單成功' });
 });
 
 // 取得個人按讚貼文名單 API

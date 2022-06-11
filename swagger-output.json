@@ -273,6 +273,37 @@
         ]
       }
     },
+    "/api/user/profile/{user_id}": {
+      "get": {
+        "tags": [
+          "User - 會員"
+        ],
+        "description": "取得個人貼文名單 API",
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "貼文資訊",
+            "schema": {
+              "$ref": "#/definitions/getPosts"
+            }
+          }
+        },
+        "security": [
+          {
+            "api_key": [
+              "apiKeyAuth"
+            ]
+          }
+        ]
+      }
+    },
     "/api/user/likes": {
       "get": {
         "tags": [
@@ -535,37 +566,6 @@
             "in": "query",
             "type": "String",
             "description": "關鍵字搜尋"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "貼文資訊",
-            "schema": {
-              "$ref": "#/definitions/getPosts"
-            }
-          }
-        },
-        "security": [
-          {
-            "api_key": [
-              "apiKeyAuth"
-            ]
-          }
-        ]
-      }
-    },
-    "/api/posts/{user_id}": {
-      "get": {
-        "tags": [
-          "Post - 貼文"
-        ],
-        "description": "取得會員貼文 API",
-        "parameters": [
-          {
-            "name": "user_id",
-            "in": "path",
-            "required": true,
-            "type": "string"
           }
         ],
         "responses": {
@@ -1347,7 +1347,7 @@
         },
         "message": {
           "type": "string",
-          "example": "取得貼文列表成功"
+          "example": "取得貼文名單成功"
         },
         "data": {
           "type": "array",
