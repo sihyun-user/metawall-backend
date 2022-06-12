@@ -28,8 +28,8 @@ exports.uploadImage = catchAsync(async(req, res, next) => {
     album: process.env.IMGUR_ALBUM_ID
   });
   
-  if (!response.data.link) {
-    return appError({statusCode: 400, message:'上傳圖片失敗'}, next);
+  if (!response.success) {
+    return appError({statusCode: 400, message:'上傳圖片失敗，圖片格式有誤'}, next);
   }
 
   let data = await IMAGE.create({ url: response.data.link });
