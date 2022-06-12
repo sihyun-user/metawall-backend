@@ -191,6 +191,11 @@ const doc = {
         },
         posts: {
           _id: '貼文ID',
+          user: {
+            _id: '會員ID',
+            name: '會員名',
+            photo: '頭貼網址'
+          },
           content: '貼文內容',
           image: '圖片網址',
           likes: ['會員ID'],

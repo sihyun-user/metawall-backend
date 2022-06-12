@@ -151,7 +151,10 @@ exports.getProfileWall = catchAsync(async(req, res, next) => {
   });
   if (!user) return appError(apiState.DATA_NOT_FOUND, next);
 
-  const posts = await Post.find({ user: userID }, '-user').populate({
+  const posts = await Post.find({ user: userID }).populate({
+    path: 'user',
+    select: 'name photo'
+  }).populate({
     path: 'comments'
   }).exec();
 

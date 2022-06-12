@@ -1647,6 +1647,23 @@
                   "type": "string",
                   "example": "貼文ID"
                 },
+                "user": {
+                  "type": "object",
+                  "properties": {
+                    "_id": {
+                      "type": "string",
+                      "example": "會員ID"
+                    },
+                    "name": {
+                      "type": "string",
+                      "example": "會員名"
+                    },
+                    "photo": {
+                      "type": "string",
+                      "example": "頭貼網址"
+                    }
+                  }
+                },
                 "content": {
                   "type": "string",
                   "example": "貼文內容"
