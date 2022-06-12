@@ -29,7 +29,7 @@ exports.uploadImage = catchAsync(async(req, res, next) => {
   });
   
   if (!response.success) {
-    return appError({statusCode: 400, message:'上傳圖片失敗，圖片格式有誤'}, next);
+    return appError({statusCode: 400, message:'圖片格式有誤'}, next);
   }
 
   let data = await IMAGE.create({ url: response.data.link });
