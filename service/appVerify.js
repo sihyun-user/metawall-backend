@@ -29,8 +29,9 @@ exports.isAuth = catchAsync(async(req, res, next) => {
   });
 
   const data = await User.findById(decoded.id);
-  const { _id, name, email, photo, sex } = data;
+  if (!data) return appError({statusCode: 401, message: '尚未登入!'}, next);
 
+  const { _id, name, email, photo, sex } = data;
   const currentUser = {
     _id: _id.toString(),
     name, email, photo, sex

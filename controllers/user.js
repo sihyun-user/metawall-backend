@@ -134,8 +134,8 @@ exports.updateProfile = catchAsync(async(req, res, next) => {
   appSuccess({res, message: '編輯會員資料成功'})
 });
 
-// 取得個人貼文名單 API
-exports.getUserPosts = catchAsync(async(req, res, next) => {
+// 取得個人動態牆 API
+exports.getProfileWall = catchAsync(async(req, res, next) => {
   const userID = req.params.user_id;
 
   // 檢查 ObjectId 型別是否有誤
@@ -143,17 +143,21 @@ exports.getUserPosts = catchAsync(async(req, res, next) => {
     return appError(apiState.ID_ERROR, next);
   };
 
-  const user= await User.findById(userID);
+  const user = await User.findById(userID)
+  .select('-followers._id -following._id')
+  .populate({ 
+    path: 'following.user followers.user', 
+    select: 'name photo' 
+  });
   if (!user) return appError(apiState.DATA_NOT_FOUND, next);
 
-  const data = await Post.find({ user: userID }).populate({
-    path: 'user',
-    select: 'name photo'
-  }).populate({
+  const posts = await Post.find({ user: userID }, '-user').populate({
     path: 'comments'
   }).exec();
 
-  appSuccess({ res, data, message: '取得貼文名單成功' });
+  const data = { user, posts };
+  
+  appSuccess({ res, data, message: '取得個人動態牆成功' });
 });
 
 // 取得個人按讚貼文名單 API

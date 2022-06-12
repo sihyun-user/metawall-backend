@@ -162,6 +162,53 @@ const doc = {
         createdAt: '貼文建立時間'
       }
     },
+    getProfileWall: {
+      status: true,
+      message: '取得個人動態牆成功',
+      data: {
+        user: {
+          _id: '會員ID',
+          name: '會員名',
+          email: '會員E-mail',
+          photo: '頭貼網址',
+          sex: '[male、female]',
+          followers: [{ 
+            user: {
+              _id: '會員ID',
+              name: '會員名',
+              photo: '頭貼網址'
+            },
+            createdAt: '追蹤時間'
+          }],
+          following: [{ 
+            user: {
+              _id: '會員ID',
+              name: '會員名',
+              photo: '頭貼網址'
+            },
+            createdAt: '追蹤時間'
+          }]
+        },
+        posts: {
+          _id: '貼文ID',
+          content: '貼文內容',
+          image: '圖片網址',
+          likes: ['會員ID'],
+          comments: [{
+            _id: '留言ID',
+            user: {
+              _id: '會員ID',
+              name: '會員名',
+              photo: '頭貼網址'
+            },
+            post: '貼文ID',
+            comment: '留言內容',
+            createdAt: '留言時間'
+          }],
+          createdAt: '貼文建立時間'
+        }
+      }
+    },
     getImages: {
       status: true,
       data: [{

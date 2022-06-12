@@ -121,17 +121,19 @@ router
     UserControllers.updateProfile
   )
 
-router.get('/user/profile/:user_id', isAuth, 
+// 會員動態牆
+
+router.get('/user/profileWall/:user_id', isAuth, 
   /*
     #swagger.tags= ['User - 會員']
-    #swagger.description = '取得個人貼文名單 API'
+    #swagger.description = '取得個人動態牆 API'
     #swagger.security = [{'api_key': ['apiKeyAuth']}]
     #swagger.responses[200] = { 
       description: '貼文資訊',
       schema: { $ref: '#/definitions/getPosts' }
     }
   */
-  UserControllers.getUserPosts
+  UserControllers.getProfileWall
 );
 
 // 會員按讚動態
