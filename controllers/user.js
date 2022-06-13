@@ -127,11 +127,12 @@ exports.updateProfile = catchAsync(async(req, res, next) => {
     return appError({statusCode: 400, message:'性別 僅接受 male、female'}, next);
   }
 
-  await User.findByIdAndUpdate(userId, {
+  const data = await User.findByIdAndUpdate(userId, {
     name, photo, sex
-  },{runValidators: true}).exec();
+  },{new: true, runValidators: true})
+  .select('-followers -following').exec();
 
-  appSuccess({res, message: '編輯會員資料成功'})
+  appSuccess({res, data, message: '編輯會員資料成功'})
 });
 
 // 取得個人動態牆 API
