@@ -112,10 +112,7 @@ router
       }
       #swagger.responses[200] = { 
         description: '會員資訊',
-        schema: {
-          status: true,
-          message: '編輯會員資料成功'
-        }
+        schema: { $ref: '#/definitions/updateProfile' }
       }
     */
     UserControllers.updateProfile
