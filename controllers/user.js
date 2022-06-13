@@ -118,13 +118,13 @@ exports.getProfile = catchAsync(async(req, res, next) => {
 exports.updateProfile = catchAsync(async(req, res, next) => {
   const userId = req.user._id;
   const { name, sex, photo } = req.body;
-
-  if (!name) {
-    return appError(apiState.DATA_MISSING, next);
-  }
-
+  // 暱稱2個字元以上
+  if (!validator.isLength(name, {min:2})) {
+    return appError({statusCode: 400, message:'暱稱字數低於2碼'}, next);
+  };
+  // 性別僅接受 male、female
   if (sex !== 'male' && sex !== 'female') {
-    return appError({statusCode: 400, message:'sex 僅接受 male、female'}, next);
+    return appError({statusCode: 400, message:'性別 僅接受 male、female'}, next);
   }
 
   await User.findByIdAndUpdate(userId, {
