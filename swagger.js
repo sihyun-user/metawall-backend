@@ -43,6 +43,19 @@ const doc = {
         }
       }
     },
+    updateProfile: {
+      status: true,
+      message: '編輯會員資料成功',
+      data: {
+        user: {
+          _id: '會員ID',
+          name: '會員名',
+          email: '會員E-mail',
+          photo: '頭貼網址',
+          sex: '[male、female]'
+        }
+      }
+    },
     updatePassword: {
       status: true,
       data: {

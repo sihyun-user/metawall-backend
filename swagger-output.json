@@ -247,20 +247,7 @@
           "200": {
             "description": "會員資訊",
             "schema": {
-              "type": "object",
-              "properties": {
-                "status": {
-                  "type": "boolean",
-                  "example": true
-                },
-                "message": {
-                  "type": "string",
-                  "example": "編輯會員資料成功"
-                }
-              },
-              "xml": {
-                "name": "main"
-              }
+              "$ref": "#/definitions/updateProfile"
             }
           }
         },
@@ -1073,6 +1060,49 @@
         "message": {
           "type": "string",
           "example": "取得會員資料成功"
+        },
+        "data": {
+          "type": "object",
+          "properties": {
+            "user": {
+              "type": "object",
+              "properties": {
+                "_id": {
+                  "type": "string",
+                  "example": "會員ID"
+                },
+                "name": {
+                  "type": "string",
+                  "example": "會員名"
+                },
+                "email": {
+                  "type": "string",
+                  "example": "會員E-mail"
+                },
+                "photo": {
+                  "type": "string",
+                  "example": "頭貼網址"
+                },
+                "sex": {
+                  "type": "string",
+                  "example": "[male、female]"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "updateProfile": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "boolean",
+          "example": true
+        },
+        "message": {
+          "type": "string",
+          "example": "編輯會員資料成功"
         },
         "data": {
           "type": "object",
