@@ -180,12 +180,14 @@ exports.getLikePostList = catchAsync(async(req, res, next) => {
 
 // 取得個人追蹤名單 API
 exports.getFollowUserList = catchAsync(async(req, res, next) => {
-  const data = await User.findById(req.user._id)
+  const follow = await User.findById(req.user._id)
   .select('-_id following.user following.createdAt')
   .populate({ 
     path: 'following.user', 
     select: 'name photo' 
   });
+
+  const data = follow.following
   
   appSuccess({ res, data, message: '取得追蹤名單成功' });
 });
