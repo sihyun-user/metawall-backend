@@ -166,7 +166,7 @@ exports.getProfileWall = catchAsync(async(req, res, next) => {
   appSuccess({ res, data, message: '取得個人動態牆成功' });
 });
 
-// 取得個人按讚貼文名單 API
+// 取得個人按讚名單 API
 exports.getLikePostList = catchAsync(async(req, res, next) => {
   const data = await Post.find({
     likes: { $in: [req.user._id] }
@@ -175,7 +175,7 @@ exports.getLikePostList = catchAsync(async(req, res, next) => {
     select: 'name photo'
   }).exec();
 
-  appSuccess({ res, data, message: '取得按讚貼文名單成功' });
+  appSuccess({ res, data, message: '取得按讚名單成功' });
 });
 
 // 取得個人追蹤名單 API

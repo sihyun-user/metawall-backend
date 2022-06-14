@@ -296,7 +296,7 @@
         "tags": [
           "User - 會員留言按讚追蹤"
         ],
-        "description": "取得個人按讚貼文名單 API",
+        "description": "取得個人按讚名單 API",
         "parameters": [],
         "responses": {
           "200": {

@@ -140,7 +140,7 @@ router
   .get(isAuth, 
     /*
       #swagger.tags = ['User - 會員留言按讚追蹤']
-      #swagger.description = '取得個人按讚貼文名單 API'
+      #swagger.description = '取得個人按讚名單 API'
       #swagger.security = [{'api_key': ['apiKeyAuth']}]  
       #swagger.responses[200] = { 
         description: '按讚資訊',
