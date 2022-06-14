@@ -73,14 +73,6 @@ const doc = {
       status: true,
       message: '取得追蹤名單成功',
       data: {
-        followers: [{ 
-          user: {
-            _id: '會員ID',
-            name: '會員名',
-            photo: '頭貼網址'
-          },
-          createdAt: '追蹤時間'
-        }],
         following: [{ 
           user: {
             _id: '會員ID',

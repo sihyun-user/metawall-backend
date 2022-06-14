@@ -127,7 +127,7 @@ router.get('/user/profileWall/:user_id', isAuth,
     #swagger.security = [{'api_key': ['apiKeyAuth']}]
     #swagger.responses[200] = { 
       description: '貼文資訊',
-      schema: { $ref: '#/definitions/getPosts' }
+      schema: { $ref: '#/definitions/getProfileWall' }
     }
   */
   UserControllers.getProfileWall
@@ -150,6 +150,8 @@ router
     UserControllers.getLikePostList
   );
 
+// 會員追蹤動態
+
 router.get('/user/follows', isAuth, 
   /*
     #swagger.tags = ['User - 會員留言按讚追蹤']
@@ -162,8 +164,6 @@ router.get('/user/follows', isAuth,
   */
   UserControllers.getFollowUserList
 );
-
-// 會員追蹤動態
 
 router
   .route('/user/:user_id/follow')
