@@ -112,10 +112,7 @@ router
       }
       #swagger.responses[200] = { 
         description: '會員資訊',
-        schema: {
-          status: true,
-          message: '編輯會員資料成功'
-        }
+        schema: { $ref: '#/definitions/updateProfile' }
       }
     */
     UserControllers.updateProfile
@@ -130,7 +127,7 @@ router.get('/user/profileWall/:user_id', isAuth,
     #swagger.security = [{'api_key': ['apiKeyAuth']}]
     #swagger.responses[200] = { 
       description: '貼文資訊',
-      schema: { $ref: '#/definitions/getPosts' }
+      schema: { $ref: '#/definitions/getProfileWall' }
     }
   */
   UserControllers.getProfileWall
@@ -143,7 +140,7 @@ router
   .get(isAuth, 
     /*
       #swagger.tags = ['User - 會員留言按讚追蹤']
-      #swagger.description = '取得個人按讚貼文名單 API'
+      #swagger.description = '取得個人按讚名單 API'
       #swagger.security = [{'api_key': ['apiKeyAuth']}]  
       #swagger.responses[200] = { 
         description: '按讚資訊',
@@ -152,6 +149,8 @@ router
     */
     UserControllers.getLikePostList
   );
+
+// 會員追蹤動態
 
 router.get('/user/follows', isAuth, 
   /*
@@ -165,8 +164,6 @@ router.get('/user/follows', isAuth,
   */
   UserControllers.getFollowUserList
 );
-
-// 會員追蹤動態
 
 router
   .route('/user/:user_id/follow')

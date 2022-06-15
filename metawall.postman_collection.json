@@ -208,7 +208,7 @@
 					"response": []
 				},
 				{
-					"name": "取得個人按讚貼文名單",
+					"name": "取得個人按讚名單",
 					"request": {
 						"method": "GET",
 						"header": [

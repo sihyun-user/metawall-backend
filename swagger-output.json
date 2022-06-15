@@ -247,20 +247,7 @@
           "200": {
             "description": "會員資訊",
             "schema": {
-              "type": "object",
-              "properties": {
-                "status": {
-                  "type": "boolean",
-                  "example": true
-                },
-                "message": {
-                  "type": "string",
-                  "example": "編輯會員資料成功"
-                }
-              },
-              "xml": {
-                "name": "main"
-              }
+              "$ref": "#/definitions/updateProfile"
             }
           }
         },
@@ -291,7 +278,7 @@
           "200": {
             "description": "貼文資訊",
             "schema": {
-              "$ref": "#/definitions/getPosts"
+              "$ref": "#/definitions/getProfileWall"
             }
           }
         },
@@ -309,7 +296,7 @@
         "tags": [
           "User - 會員留言按讚追蹤"
         ],
-        "description": "取得個人按讚貼文名單 API",
+        "description": "取得個人按讚名單 API",
         "parameters": [],
         "responses": {
           "200": {
@@ -1106,6 +1093,49 @@
         }
       }
     },
+    "updateProfile": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "boolean",
+          "example": true
+        },
+        "message": {
+          "type": "string",
+          "example": "編輯會員資料成功"
+        },
+        "data": {
+          "type": "object",
+          "properties": {
+            "user": {
+              "type": "object",
+              "properties": {
+                "_id": {
+                  "type": "string",
+                  "example": "會員ID"
+                },
+                "name": {
+                  "type": "string",
+                  "example": "會員名"
+                },
+                "email": {
+                  "type": "string",
+                  "example": "會員E-mail"
+                },
+                "photo": {
+                  "type": "string",
+                  "example": "頭貼網址"
+                },
+                "sex": {
+                  "type": "string",
+                  "example": "[male、female]"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "updatePassword": {
       "type": "object",
       "properties": {
@@ -1161,64 +1191,30 @@
           "example": "取得追蹤名單成功"
         },
         "data": {
-          "type": "object",
-          "properties": {
-            "followers": {
-              "type": "array",
-              "items": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "user": {
                 "type": "object",
                 "properties": {
-                  "user": {
-                    "type": "object",
-                    "properties": {
-                      "_id": {
-                        "type": "string",
-                        "example": "會員ID"
-                      },
-                      "name": {
-                        "type": "string",
-                        "example": "會員名"
-                      },
-                      "photo": {
-                        "type": "string",
-                        "example": "頭貼網址"
-                      }
-                    }
-                  },
-                  "createdAt": {
+                  "_id": {
                     "type": "string",
-                    "example": "追蹤時間"
+                    "example": "會員ID"
+                  },
+                  "name": {
+                    "type": "string",
+                    "example": "會員名"
+                  },
+                  "photo": {
+                    "type": "string",
+                    "example": "頭貼網址"
                   }
                 }
-              }
-            },
-            "following": {
-              "type": "array",
-              "items": {
-                "type": "object",
-                "properties": {
-                  "user": {
-                    "type": "object",
-                    "properties": {
-                      "_id": {
-                        "type": "string",
-                        "example": "會員ID"
-                      },
-                      "name": {
-                        "type": "string",
-                        "example": "會員名"
-                      },
-                      "photo": {
-                        "type": "string",
-                        "example": "頭貼網址"
-                      }
-                    }
-                  },
-                  "createdAt": {
-                    "type": "string",
-                    "example": "追蹤時間"
-                  }
-                }
+              },
+              "createdAt": {
+                "type": "string",
+                "example": "追蹤時間"
               }
             }
           }
@@ -1307,23 +1303,6 @@
               "_id": {
                 "type": "string",
                 "example": "貼文ID"
-              },
-              "user": {
-                "type": "object",
-                "properties": {
-                  "_id": {
-                    "type": "string",
-                    "example": "會員ID"
-                  },
-                  "name": {
-                    "type": "string",
-                    "example": "會員名"
-                  },
-                  "photo": {
-                    "type": "string",
-                    "example": "頭貼網址"
-                  }
-                }
               },
               "comment": {
                 "type": "string",

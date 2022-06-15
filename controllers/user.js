@@ -118,20 +118,23 @@ exports.getProfile = catchAsync(async(req, res, next) => {
 exports.updateProfile = catchAsync(async(req, res, next) => {
   const userId = req.user._id;
   const { name, sex, photo } = req.body;
-
-  if (!name) {
-    return appError(apiState.DATA_MISSING, next);
-  }
-
+  // 暱稱2個字元以上
+  if (!validator.isLength(name, {min:2})) {
+    return appError({statusCode: 400, message:'暱稱字數低於2碼'}, next);
+  };
+  // 性別僅接受 male、female
   if (sex !== 'male' && sex !== 'female') {
-    return appError({statusCode: 400, message:'sex 僅接受 male、female'}, next);
+    return appError({statusCode: 400, message:'性別 僅接受 male、female'}, next);
   }
 
-  await User.findByIdAndUpdate(userId, {
+  const newUser = await User.findByIdAndUpdate(userId, {
     name, photo, sex
-  },{runValidators: true}).exec();
+  },{new: true, runValidators: true})
+  .select('-followers -following').exec();
 
-  appSuccess({res, message: '編輯會員資料成功'})
+  const data = { user: newUser }
+
+  appSuccess({res, data, message: '編輯會員資料成功'})
 });
 
 // 取得個人動態牆 API
@@ -163,7 +166,7 @@ exports.getProfileWall = catchAsync(async(req, res, next) => {
   appSuccess({ res, data, message: '取得個人動態牆成功' });
 });
 
-// 取得個人按讚貼文名單 API
+// 取得個人按讚名單 API
 exports.getLikePostList = catchAsync(async(req, res, next) => {
   const data = await Post.find({
     likes: { $in: [req.user._id] }
@@ -172,18 +175,19 @@ exports.getLikePostList = catchAsync(async(req, res, next) => {
     select: 'name photo'
   }).exec();
 
-  appSuccess({ res, data, message: '取得按讚貼文名單成功' });
+  appSuccess({ res, data, message: '取得按讚名單成功' });
 });
 
 // 取得個人追蹤名單 API
 exports.getFollowUserList = catchAsync(async(req, res, next) => {
-  const data = await User.findById(req.user._id)
-  .select('-_id followers.user following.user')
-  .select('followers.createdAt following.createdAt')
+  const follow = await User.findById(req.user._id)
+  .select('-_id following.user following.createdAt')
   .populate({ 
-    path: 'following.user followers.user', 
+    path: 'following.user', 
     select: 'name photo' 
   });
+
+  const data = follow.following
   
   appSuccess({ res, data, message: '取得追蹤名單成功' });
 });
@@ -191,7 +195,7 @@ exports.getFollowUserList = catchAsync(async(req, res, next) => {
 // 取得個人留言名單 API
 exports.getCommentPostList = catchAsync(async(req, res, next) => {
   const user = req.user._id;
-  const data = await Comment.find({ user }).exec();
+  const data = await Comment.find({ user }).select('-user').exec();
   
   appSuccess({ res, data, message: '取得留言名單成功' });
 });

@@ -43,6 +43,19 @@ const doc = {
         }
       }
     },
+    updateProfile: {
+      status: true,
+      message: '編輯會員資料成功',
+      data: {
+        user: {
+          _id: '會員ID',
+          name: '會員名',
+          email: '會員E-mail',
+          photo: '頭貼網址',
+          sex: '[male、female]'
+        }
+      }
+    },
     updatePassword: {
       status: true,
       data: {
@@ -59,24 +72,14 @@ const doc = {
     getFollowUserList: {
       status: true,
       message: '取得追蹤名單成功',
-      data: {
-        followers: [{ 
-          user: {
-            _id: '會員ID',
-            name: '會員名',
-            photo: '頭貼網址'
-          },
-          createdAt: '追蹤時間'
-        }],
-        following: [{ 
-          user: {
-            _id: '會員ID',
-            name: '會員名',
-            photo: '頭貼網址'
-          },
-          createdAt: '追蹤時間'
-        }]
-      }
+      data: [{ 
+        user: {
+          _id: '會員ID',
+          name: '會員名',
+          photo: '頭貼網址'
+        },
+        createdAt: '追蹤時間'
+      }]
     },
     getLikePostList: {
       status: true,
@@ -99,11 +102,6 @@ const doc = {
       message: '取得留言貼文名單成功',
       data: [{
         _id: '貼文ID',
-        user: {
-          _id: '會員ID',
-          name: '會員名',
-          photo: '頭貼網址'
-        },
         comment: '留言內容',
         createdAt: '按讚貼文時間'
       }]
