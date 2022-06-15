@@ -20,6 +20,11 @@ router.get('/posts', isAuth,
       type: 'String',
       description: '關鍵字搜尋',
     },
+    #swagger.parameters['userId'] = {
+      in: 'query',
+      type: 'String',
+      description: '會員搜尋',
+    },
     #swagger.responses[200] = { 
       description: '貼文資訊',
       schema: { $ref: '#/definitions/getPosts' }

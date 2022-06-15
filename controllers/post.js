@@ -22,7 +22,7 @@ exports.getAllPosts = catchAsync(async(req, res, next) => {
   // 貼文關鍵字搜尋與篩選
   const timeSort = query.timeSort == 'asc' ? 'createdAt' : '-createdAt';
   const q = query.q !== undefined ? {'content': new RegExp(str)} : {};
-  const userId = query.user_id ? { user: query.user_id } : {}
+  const userId = query.userId ? { user: query.userId } : {}
   const data = await Post.find({ ...userId, ...q }).populate({
     path: 'user',
     select: 'name photo'

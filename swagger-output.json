@@ -553,6 +553,12 @@
             "in": "query",
             "type": "String",
             "description": "關鍵字搜尋"
+          },
+          {
+            "name": "userId",
+            "in": "query",
+            "type": "String",
+            "description": "會員搜尋"
           }
         ],
         "responses": {
