@@ -13,7 +13,7 @@ exports.getAllPosts = catchAsync(async(req, res, next) => {
   let str;
 
   // 關鍵字檢查
-  if (query.q && /\W|[_]/g.test(query.q)){
+  if (query.q || /\W|[_]/g.test(query.q)){
     str = query.q.replace(/\W|_/g, '[$&]');
   } else {
     str = query.q
@@ -22,7 +22,8 @@ exports.getAllPosts = catchAsync(async(req, res, next) => {
   // 貼文關鍵字搜尋與篩選
   const timeSort = query.timeSort == 'asc' ? 'createdAt' : '-createdAt';
   const q = query.q !== undefined ? {'content': new RegExp(str)} : {};
-  const data = await Post.find(q).populate({
+  const userId = query.user_id ? { user: query.user_id } : {}
+  const data = await Post.find({ ...userId, ...q }).populate({
     path: 'user',
     select: 'name photo'
   }).populate({
