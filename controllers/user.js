@@ -195,7 +195,7 @@ exports.getFollowUserList = catchAsync(async(req, res, next) => {
 // 取得個人留言名單 API
 exports.getCommentPostList = catchAsync(async(req, res, next) => {
   const user = req.user._id;
-  const data = await Comment.find({ user }).exec();
+  const data = await Comment.find({ user }).select('-user').exec();
   
   appSuccess({ res, data, message: '取得留言名單成功' });
 });

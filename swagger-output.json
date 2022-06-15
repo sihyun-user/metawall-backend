@@ -278,7 +278,7 @@
           "200": {
             "description": "貼文資訊",
             "schema": {
-              "$ref": "#/definitions/getPosts"
+              "$ref": "#/definitions/getProfileWall"
             }
           }
         },
@@ -1191,64 +1191,30 @@
           "example": "取得追蹤名單成功"
         },
         "data": {
-          "type": "object",
-          "properties": {
-            "followers": {
-              "type": "array",
-              "items": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "user": {
                 "type": "object",
                 "properties": {
-                  "user": {
-                    "type": "object",
-                    "properties": {
-                      "_id": {
-                        "type": "string",
-                        "example": "會員ID"
-                      },
-                      "name": {
-                        "type": "string",
-                        "example": "會員名"
-                      },
-                      "photo": {
-                        "type": "string",
-                        "example": "頭貼網址"
-                      }
-                    }
-                  },
-                  "createdAt": {
+                  "_id": {
                     "type": "string",
-                    "example": "追蹤時間"
+                    "example": "會員ID"
+                  },
+                  "name": {
+                    "type": "string",
+                    "example": "會員名"
+                  },
+                  "photo": {
+                    "type": "string",
+                    "example": "頭貼網址"
                   }
                 }
-              }
-            },
-            "following": {
-              "type": "array",
-              "items": {
-                "type": "object",
-                "properties": {
-                  "user": {
-                    "type": "object",
-                    "properties": {
-                      "_id": {
-                        "type": "string",
-                        "example": "會員ID"
-                      },
-                      "name": {
-                        "type": "string",
-                        "example": "會員名"
-                      },
-                      "photo": {
-                        "type": "string",
-                        "example": "頭貼網址"
-                      }
-                    }
-                  },
-                  "createdAt": {
-                    "type": "string",
-                    "example": "追蹤時間"
-                  }
-                }
+              },
+              "createdAt": {
+                "type": "string",
+                "example": "追蹤時間"
               }
             }
           }
@@ -1337,23 +1303,6 @@
               "_id": {
                 "type": "string",
                 "example": "貼文ID"
-              },
-              "user": {
-                "type": "object",
-                "properties": {
-                  "_id": {
-                    "type": "string",
-                    "example": "會員ID"
-                  },
-                  "name": {
-                    "type": "string",
-                    "example": "會員名"
-                  },
-                  "photo": {
-                    "type": "string",
-                    "example": "頭貼網址"
-                  }
-                }
               },
               "comment": {
                 "type": "string",

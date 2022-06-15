@@ -102,11 +102,6 @@ const doc = {
       message: '取得留言貼文名單成功',
       data: [{
         _id: '貼文ID',
-        user: {
-          _id: '會員ID',
-          name: '會員名',
-          photo: '頭貼網址'
-        },
         comment: '留言內容',
         createdAt: '按讚貼文時間'
       }]
