@@ -5,6 +5,7 @@ const setError = (customError, err) => {
   err.message = customError.message
   err.status = customError.status
   err.statusCode = customError.statusCode
+  err.isOperational = true
 }; 
 
 // 正式環境錯誤
@@ -44,11 +45,9 @@ const handleError = (err, req, res, next) => {
     setError(apiState.SYNTAX_ERROR, err);
   }
   if (err.name === 'ValidationError') {
-    err.isOperational = true
     setError(apiState.DATA_MISSING, err);
   }
   if (err.name === 'CastError') {
-    err.isOperational = true
     setError(apiState.ID_ERROR, err);
   }
 
