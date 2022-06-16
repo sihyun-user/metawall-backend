@@ -37,11 +37,6 @@ exports.getAllPosts = catchAsync(async(req, res, next) => {
 exports.getOnePost = catchAsync(async(req, res, next) => {
   const postId = req.params.post_id;
 
-  // 檢查 ObjectId 型別是否有誤
-  if (!checkId(postId)) {
-    return appError(apiState.ID_ERROR, next);
-  }
-
   const data = await Post.findById(postId).populate({
     path: 'user',
     select: 'name photo'
@@ -56,16 +51,20 @@ exports.getOnePost = catchAsync(async(req, res, next) => {
 
 // 新增一則貼文 API
 exports.createPost = catchAsync(async(req, res, next) => {
-  const { content, image } = req.body;
-
-  if (!content) return appError(apiState.DATA_MISSING, next);
+  let { content, image } = req.body;
+  
+  // 貼文內容不為空
+  content = content.trim();
+  if (!content) {
+    return appError({statusCode: 400, message:'貼文內容不為空'}, next);
+  };
 
   let data = await Post.create({
     user: req.user._id, 
     content, 
     image
   });
-  
+
   data = { newPostId: data._id };
 
   appSuccess({res, data, message: '新增一則貼文成功'});
@@ -74,19 +73,18 @@ exports.createPost = catchAsync(async(req, res, next) => {
 // 編輯一則貼文 API
 exports.updatePost = catchAsync(async(req, res, next) => {
   const postId = req.params.post_id;
-  const { image, content } = req.body;
+  let { image, content } = req.body;
 
-  if (!content) return appError(apiState.DATA_MISSING, next);
-  
-  // 檢查 ObjectId 型別是否有誤
-  if (!checkId(postId)) {
-    return appError(apiState.ID_ERROR, next);
-  }
+  // 貼文內容不為空
+  content = content.trim();
+  if (!content) {
+    return appError({statusCode: 400, message:'貼文內容不為空'}, next);
+  };
 
   const data = await Post.findByIdAndUpdate(postId, {
     image: image,
     content: content,
-  },{new: true}).exec();
+  },{new: true, runValidators: true}).exec();
 
   if(!data) return appError(apiState.DATA_NOT_FOUND, next);
 
@@ -96,11 +94,6 @@ exports.updatePost = catchAsync(async(req, res, next) => {
 // 刪除一則貼文 API
 exports.deleteOnePost = catchAsync(async(req, res, next) => {
   const postId = req.params.post_id;
-
-  // 檢查 ObjectId 型別是否有誤
-  if (!checkId(postId)) {
-    return appError(apiState.ID_ERROR, next);
-  }
 
   const post = await Post.findByIdAndDelete(postId);
   if (!post) return appError(apiState.DATA_NOT_FOUND, next);
@@ -112,14 +105,9 @@ exports.deleteOnePost = catchAsync(async(req, res, next) => {
 exports.addPostLike = catchAsync(async(req, res, next) => {
   const postId = req.params.post_id;
 
-  // 檢查 ObjectId 型別是否有誤
-  if (postId && !checkId(postId)) {
-    return appError(apiState.ID_ERROR, next);
-  };
-  
   const data = await Post.findOneAndUpdate({ _id: postId }, {
     $addToSet: { likes: req.user._id }
-  },{new: true}).exec();
+  },{new: true, runValidators: true}).exec();
 
   if (!data) return appError(apiState.DATA_NOT_FOUND, next);
 
@@ -130,11 +118,6 @@ exports.addPostLike = catchAsync(async(req, res, next) => {
 exports.canclePostLike = catchAsync(async(req, res, next) => {
   const postId = req.params.post_id;
 
-  // 檢查 ObjectId 型別是否有誤
-  if (postId && !checkId(postId)) {
-    return appError(apiState.ID_ERROR, next);
-  };
-  
   const data = await Post.findOneAndUpdate({ _id: postId }, {
     $pull: { likes: req.user._id }
   }).exec();
@@ -148,13 +131,12 @@ exports.canclePostLike = catchAsync(async(req, res, next) => {
 exports.craetePostComment = catchAsync(async(req, res, next) => {
   const userId = req.user._id;
   const postId =  req.params.post_id;
-  const { comment } = req.body;
+  let { comment } = req.body;
 
-  if (!comment) return (apiState.DATA_NOT_FOUND, next);
-
-  // 檢查 ObjectId 型別是否有誤
-  if (postId && !checkId(postId)) {
-    return appError(apiState.ID_ERROR, next);
+  // 貼文留言不為空
+  comment = comment.trim();
+  if (!comment) {
+    return appError({statusCode: 400, message:'貼文留言不為空'}, next);
   };
 
   const post = await Post.findById(postId);
@@ -166,5 +148,5 @@ exports.craetePostComment = catchAsync(async(req, res, next) => {
     comment
   });
 
-  appSuccess({ res, message: '貼文留言成功' })
+  appSuccess({ res, message: '新增貼文留言成功' })
 });

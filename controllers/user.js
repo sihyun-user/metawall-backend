@@ -115,14 +115,19 @@ exports.getProfile = catchAsync(async(req, res, next) => {
 // 編輯會員資料 API
 exports.updateProfile = catchAsync(async(req, res, next) => {
   const userId = req.user._id;
-  const { name, sex, photo } = req.body;
+  let { name, sex, photo } = req.body;
+  // 暱稱不為空
+  name = name.trim();
+  if (!name) {
+    return appError({statusCode: 400, message:'暱稱不為空'}, next);
+  };
   // 暱稱2個字元以上
   if (!validator.isLength(name, {min:2})) {
     return appError({statusCode: 400, message:'暱稱字數低於2碼'}, next);
   };
   // 性別僅接受 male、female
   if (sex !== 'male' && sex !== 'female') {
-    return appError({statusCode: 400, message:'性別 僅接受 male、female'}, next);
+    return appError({statusCode: 400, message:'性別僅接受 male、female'}, next);
   }
 
   const newUser = await User.findByIdAndUpdate(userId, {
@@ -138,11 +143,6 @@ exports.updateProfile = catchAsync(async(req, res, next) => {
 // 取得個人動態牆 API
 exports.getProfileWall = catchAsync(async(req, res, next) => {
   const userID = req.params.user_id;
-
-  // 檢查 ObjectId 型別是否有誤
-  if (userID && !checkId(userID)) {
-    return appError(apiState.ID_ERROR, next);
-  };
 
   const user = await User.findById(userID)
   .select('-followers._id -following._id')
@@ -203,11 +203,6 @@ exports.canclePostComment = catchAsync(async(req, res, next) => {
   const userId = req.user._id;
   const commentId =  req.params.comment_id;
 
-  // 檢查 ObjectId 型別是否有誤
-  if (commentId && !checkId(commentId)) {
-    return appError(apiState.ID_ERROR, next);
-  };
-
   const data = await Comment.findById(commentId).exec();
   if(!data) {
     return appError(apiState.DATA_NOT_FOUND, next);
@@ -227,13 +222,12 @@ exports.canclePostComment = catchAsync(async(req, res, next) => {
 exports.updatePostComment = catchAsync(async(req, res, next) => {
   const userId = req.user._id;
   const commentId =  req.params.comment_id;
-  const { comment } = req.body;
+  let { comment } = req.body;
 
-  if (!comment) return appError(apiState.DATA_MISSING, next);
-
-  // 檢查 ObjectId 型別是否有誤
-  if (commentId && !checkId(commentId)) {
-    return appError(apiState.ID_ERROR, next);
+  // 貼文留言不為空
+  comment = comment.trim();
+  if (!comment) {
+    return appError({statusCode: 400, message:'貼文留言不為空'}, next);
   };
 
   const data = await Comment.findById(commentId).exec();

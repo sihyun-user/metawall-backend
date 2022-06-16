@@ -161,7 +161,7 @@ router.post('/post/:post_id/comment', isAuth,
       description: '貼文留言資訊',
       schema: {
         status: true,
-        message: '貼文留言成功'
+        message: '新增貼文留言成功'
       }
     }
   */

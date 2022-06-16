@@ -1,3 +1,12 @@
+const apiState = require('../service/apiState');  
+
+// 自訂錯誤訊息
+const setError = (customError, err) => {
+  err.message = customError.message
+  err.status = customError.status
+  err.statusCode = customError.statusCode
+}; 
+
 // 正式環境錯誤
 const resErrorProd = (err, res) => {
   if (err.isOperational) {
@@ -28,21 +37,26 @@ const resErrorDev = (err, res) => {
 
 // express 錯誤處理
 const handleError = (err, req, res, next) => {
-  // dev
+  const isDev = process.env.NODE_ENV === 'development'
   err.statusCode = err.statusCode || 500;
-  if (process.env.NODE_ENV === 'development') {
+
+  if (err instanceof SyntaxError) {
+    setError(apiState.SYNTAX_ERROR, err);
+  }
+  if (err.name === 'ValidationError') {
+    err.isOperational = true
+    setError(apiState.DATA_MISSING, err);
+  }
+  if (err.name === 'CastError') {
+    err.isOperational = true
+    setError(apiState.ID_ERROR, err);
+  }
+
+  // dev
+  if (isDev) {
     return resErrorDev(err, res);
   }
   // prod
-  if (err.name === 'ValidationError') {
-    const apiDataState = apiState.DATA_MISSING;
-
-    err.statusCode = apiDataState.statusCode;
-    err.message = apiDataState.message;
-    err.isOperational = true;
-    return resValidationError(err, res);
-  }
-
   resErrorProd(err, res);
 };
 
