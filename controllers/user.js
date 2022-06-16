@@ -21,9 +21,12 @@ exports.signup = catchAsync(async(req, res, next) => {
   if (!name || !email || !password ||  !confirmPassword) {
     return appError(apiState.DATA_MISSING, next);
   };
+  // 暱稱不為空
+  if (validator.isEmpty(name.trim())) {
+    return appError({statusCode: 400, message:'暱稱不為空'}, next);
+  };
   // 暱稱2個字元以上
-  name = name.trim();
-  if (!validator.isLength(name, {min:2})) {
+  if (!validator.isLength(name.trim(), {min:2})) {
     return appError({statusCode: 400, message:'暱稱字數低於2碼'}, next);
   };
   // 是否為Email
@@ -130,14 +133,17 @@ exports.getProfile = catchAsync(async(req, res, next) => {
 // 編輯會員資料 API
 exports.updateProfile = catchAsync(async(req, res, next) => {
   const userId = req.userId;
-  let { name, photo, sex } = req.body;
+  const { name, photo, sex } = req.body;
   // 資料欄位正確
   if (!name || !photo || !sex) {
     return appError(apiState.DATA_MISSING, next);
   };
+  // 暱稱不為空
+  if (validator.isEmpty(name.trim())) {
+    return appError({statusCode: 400, message:'暱稱不為空'}, next);
+  };
   // 暱稱2個字元以上
-  name = name.trim();
-  if (!validator.isLength(name, {min:2})) {
+  if (!validator.isLength(name.trim(), {min:2})) {
     return appError({statusCode: 400, message:'暱稱字數低於2碼'}, next);
   };
   // 性別僅接受 male、female
@@ -230,14 +236,13 @@ exports.getCommentPostList = catchAsync(async(req, res, next) => {
 exports.updatePostComment = catchAsync(async(req, res, next) => {
   const userId = req.userId;
   const commentId =  req.params.comment_id;
-  let { comment } = req.body;
+  const { comment } = req.body;
   // 資料欄位正確
   if (!comment) {
     return appError(apiState.DATA_MISSING, next);
   }
   // 貼文留言不為空
-  comment = comment.trim();
-  if (!comment) {
+  if (!validator.isEmpty(comment.trim())) {
     return appError({statusCode: 400, message:'貼文留言不為空'}, next);
   };
 

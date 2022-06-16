@@ -5,6 +5,7 @@ const catchAsync = require('../service/catchAsync');
 const appSuccess = require('../service/appSuccess');
 const appError = require('../service/appError');
 const apiState = require('../service/apiState');  
+const validator = require('validator');
 
 // 取得貼文列表 API
 exports.getAllPosts = catchAsync(async(req, res, next) => {
@@ -55,14 +56,13 @@ exports.getOnePost = catchAsync(async(req, res, next) => {
 
 // 新增一則貼文 API
 exports.createPost = catchAsync(async(req, res, next) => {
-  let { content, image } = req.body;
+  const { content, image } = req.body;
   // 資料欄位正確
   if (!content) {
     return appError(apiState.DATA_MISSING, next);
   };
   // 貼文內容不為空
-  content = content.trim();
-  if (!content) {
+  if (validator.isEmpty(content.trim())) {
     return appError({statusCode: 400, message:'貼文內容不為空'}, next);
   };
 
@@ -81,23 +81,23 @@ exports.createPost = catchAsync(async(req, res, next) => {
 exports.updatePost = catchAsync(async(req, res, next) => {
   const userId = req.userId;
   const postId = req.params.post_id;
-  let { image, content } = req.body;
+  const { image, content } = req.body;
   // 資料欄位正確
   if (!content) {
     return appError(apiState.DATA_MISSING, next);
   };
   // 貼文內容不為空
-  content = content.trim();
-  if (!content) {
+  if (validator.isEmpty(content.trim())) {
     return appError({statusCode: 400, message:'貼文內容不為空'}, next);
   };
 
-  //TODO:fix
-  const checkPost = await Post.findById(postId).exec();
-  if (!checkPost) {
+  const post = await Post.findById(postId).exec();
+  if (!post) {
     return appError(apiState.DATA_NOT_FOUND, next);
-  }
-  if (checkPost.user !== userId) {
+  };
+
+  const postUId = [post.user._id].toString();
+  if (postUId !== userId) {
     return appError({statusCode: 400, message:'你無法編輯此則貼文'}, next);
   };
 
@@ -116,16 +116,17 @@ exports.deleteOnePost = catchAsync(async(req, res, next) => {
   const userId = req.userId;
   const postId = req.params.post_id;
 
-  const checkPost = await Post.findById(postId).exec();
-  if (!checkPost ) {
+  const post = await Post.findById(postId).exec();
+  if (!post) {
     return appError(apiState.DATA_NOT_FOUND, next);
-  }
-  if (checkPost.user !== userId) {
+  };
+
+  const postUId = [post.user._id].toString();
+  if (postUId !== userId) {
     return appError({statusCode: 400, message:'你無法刪除此則貼文'}, next);
   };
 
-  const post = await Post.findByIdAndDelete(postId);
-  if (!post) return appError(apiState.DATA_NOT_FOUND, next);
+  await Post.findByIdAndDelete(postId);
   
   appSuccess({res, message:'刪除一則貼文成功'});
 });
@@ -160,11 +161,13 @@ exports.canclePostLike = catchAsync(async(req, res, next) => {
 exports.craetePostComment = catchAsync(async(req, res, next) => {
   const userId = req.userId;
   const postId =  req.params.post_id;
-  let { comment } = req.body;
-
-  // 貼文留言不為空
-  comment = comment.trim();
+  const { comment } = req.body;
+  // 資料欄位正確
   if (!comment) {
+    return appError(apiState.DATA_MISSING, next);
+  };
+  // 貼文留言不為空
+  if (validator.isEmpty(comment.trim())) {
     return appError({statusCode: 400, message:'貼文留言不為空'}, next);
   };
 
