@@ -51,11 +51,3 @@ exports.generateSendJWT = (user, res) => {
 
   return token;
 };
-
-exports.checkId = (objectId) =>  {
-  if (!objectId.match(/^[0-9a-fA-F]{24}$/)) {
-    return false;
-  };
-
-  return true;
-};

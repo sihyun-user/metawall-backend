@@ -13,7 +13,7 @@ const apiState = {
   },
   DATA_NOT_FOUND: {
     statusCode: 400,
-    message: '找不到此筆資料'
+    message: '資料不存在'
   },
   SYNTAX_ERROR: {
     message: 'Syntax Error，語法錯誤或非 JSON 格式',

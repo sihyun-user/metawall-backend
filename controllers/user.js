@@ -7,7 +7,7 @@ const catchAsync = require('../service/catchAsync');
 const appSuccess = require('../service/appSuccess');
 const appError = require('../service/appError');
 const apiState = require('../service/apiState'); 
-const { checkId, generateSendJWT } = require('../service/appVerify');
+const { generateSendJWT } = require('../service/appVerify');
 
 const checkPassword = (password) => {
   const check = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
@@ -64,10 +64,14 @@ exports.login = catchAsync(async(req, res, next) => {
   }
 
   const user = await User.findOne({ email }).select('+password').exec();
-  if (!user) return appError({statusCode: 400, message:'E-mail帳號錯誤'}, next);
+  if (!user) {
+    return appError({statusCode: 400, message:'E-mail帳號錯誤'}, next);
+  };
 
-  const auth = await bcrypt.compare(password, user.password);
-  if (!auth) return appError({statusCode: 400, message:'密碼錯誤'}, next);
+  const checkPwd = await bcrypt.compare(password, user.password);
+  if (!checkPwd) {
+    return appError({statusCode: 400, message:'密碼錯誤'}, next);
+  };
   
   const token = await generateSendJWT(user, res);
   const { _id, name, photo, sex } = user;
@@ -106,9 +110,7 @@ exports.updatePassword = catchAsync(async(req, res, next) => {
 
 // 取得會員資料 API
 exports.getProfile = catchAsync(async(req, res, next) => {
-  const data = {
-    user: req.user
-  };
+  const data = { user: req.user };
   appSuccess({res, data, message: '取得會員資料成功'});
 });
 
@@ -168,7 +170,8 @@ exports.getProfileWall = catchAsync(async(req, res, next) => {
 exports.getLikePostList = catchAsync(async(req, res, next) => {
   const data = await Post.find({
     likes: { $in: [req.user._id] }
-  }).populate({
+  })
+  .populate({
     path: 'user',
     select: 'name photo'
   }).exec();
@@ -204,14 +207,14 @@ exports.canclePostComment = catchAsync(async(req, res, next) => {
   const commentId =  req.params.comment_id;
 
   const data = await Comment.findById(commentId).exec();
-  if(!data) {
+  if (!data) {
     return appError(apiState.DATA_NOT_FOUND, next);
-  } 
+  };
 
-  const commentUserId = [data.user._id].toString();
-  if (commentUserId !== userId) {
-    return appError({statusCode: 400, message:'非本人不能刪除此留言'}, next);
-  }
+  const commentUId = [data.user._id].toString();
+  if (commentUId !== userId) {
+    return appError({statusCode: 400, message:'你無法刪除此則留言'}, next);
+  };
 
   await Comment.findByIdAndDelete(commentId).exec();
 
@@ -231,14 +234,14 @@ exports.updatePostComment = catchAsync(async(req, res, next) => {
   };
 
   const data = await Comment.findById(commentId).exec();
-  if(!data) {
+  if (!data) {
     return appError(apiState.DATA_NOT_FOUND, next);
-  } 
+  };
 
-  const commentUserId = [data.user._id].toString();
-  if (commentUserId !== userId) {
-    return appError({statusCode: 400, message:'非本人不能刪除此留言'}, next);
-  }
+  const commentUId = [data.user._id].toString();
+  if (commentUId !== userId) {
+    return appError({statusCode: 400, message:'你無法編輯此則留言'}, next);
+  };
 
   Comment.findByIdAndUpdate(commentId,{
     comment
@@ -256,8 +259,10 @@ exports.followUser = catchAsync(async(req, res, next) => {
     return appError({statusCode: 400, message:'您無法追蹤自己'}, next);
   }
 
-  const checkUser = await User.findById(followId).exec();
-  if (!checkUser) return appError(apiState.DATA_NOT_FOUND, next);
+  const checkFollow = await User.findById(followId).exec();
+  if (!checkFollow) {
+    return appError({statusCode: 400, message:'找不到追蹤對象'}, next);
+  }
 
   // 個人追蹤
   await User.updateOne(
@@ -291,10 +296,12 @@ exports.unfollowUser = catchAsync(async(req, res, next) => {
 
   if (userId === followId) {
     return appError({statusCode: 400, message:'您無法取消追蹤自己'}, next);
-  }
+  };
 
-  const checkUser = await User.findById(followId).exec();
-  if (!checkUser) return appError(apiState.DATA_NOT_FOUND, next);
+  const checkFollow = await User.findById(followId).exec();
+  if (!checkFollow) {
+    return appError({statusCode: 400, message:'找不到追蹤對象'}, next);
+  };
 
   // 個人取消追蹤
   await User.updateOne(
