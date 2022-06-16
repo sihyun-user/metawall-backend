@@ -5,7 +5,6 @@ const catchAsync = require('../service/catchAsync');
 const appSuccess = require('../service/appSuccess');
 const appError = require('../service/appError');
 const apiState = require('../service/apiState');  
-const { checkId } = require('../service/appVerify');
 
 // 取得貼文列表 API
 exports.getAllPosts = catchAsync(async(req, res, next) => {
@@ -23,12 +22,15 @@ exports.getAllPosts = catchAsync(async(req, res, next) => {
   const timeSort = query.timeSort == 'asc' ? 'createdAt' : '-createdAt';
   const q = query.q !== undefined ? {'content': new RegExp(str)} : {};
   const userId = query.userId ? { user: query.userId } : {}
-  const data = await Post.find({ ...userId, ...q }).populate({
+  const data = await Post.find({ ...userId, ...q })
+  .populate({
     path: 'user',
     select: 'name photo'
-  }).populate({
+  })
+  .populate({
     path: 'comments'
-  }).sort(timeSort).exec();
+  })
+  .sort(timeSort).exec();
 
   appSuccess({res, data, message: '取得貼文列表成功'});
 });
@@ -40,9 +42,11 @@ exports.getOnePost = catchAsync(async(req, res, next) => {
   const data = await Post.findById(postId).populate({
     path: 'user',
     select: 'name photo'
-  }).populate({
+  })
+  .populate({
     path: 'comments'
-  }).exec();
+  })
+  .exec();
 
   if (!data) return appError(apiState.DATA_NOT_FOUND, next);
 
@@ -52,7 +56,7 @@ exports.getOnePost = catchAsync(async(req, res, next) => {
 // 新增一則貼文 API
 exports.createPost = catchAsync(async(req, res, next) => {
   let { content, image } = req.body;
-  
+
   // 貼文內容不為空
   content = content.trim();
   if (!content) {
@@ -72,6 +76,7 @@ exports.createPost = catchAsync(async(req, res, next) => {
 
 // 編輯一則貼文 API
 exports.updatePost = catchAsync(async(req, res, next) => {
+  const userId = req.user._id;
   const postId = req.params.post_id;
   let { image, content } = req.body;
 
@@ -79,6 +84,11 @@ exports.updatePost = catchAsync(async(req, res, next) => {
   content = content.trim();
   if (!content) {
     return appError({statusCode: 400, message:'貼文內容不為空'}, next);
+  };
+
+  const checkPost = await Post.findById(postId).exec();
+  if (checkPost.user !== userId) {
+    return appError({statusCode: 400, message:'你無法編輯此則貼文'}, next);
   };
 
   const data = await Post.findByIdAndUpdate(postId, {
@@ -93,7 +103,13 @@ exports.updatePost = catchAsync(async(req, res, next) => {
 
 // 刪除一則貼文 API
 exports.deleteOnePost = catchAsync(async(req, res, next) => {
+  const userId = req.user._id;
   const postId = req.params.post_id;
+
+  const checkPost = await Post.findById(postId).exec();
+  if (checkPost.user !== userId) {
+    return appError({statusCode: 400, message:'你無法刪除此則貼文'}, next);
+  };
 
   const post = await Post.findByIdAndDelete(postId);
   if (!post) return appError(apiState.DATA_NOT_FOUND, next);
