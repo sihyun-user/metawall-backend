@@ -1050,7 +1050,7 @@
             },
             "token": {
               "type": "string",
-              "example": ""
+              "example": "Bearer token"
             }
           }
         }
@@ -1281,9 +1281,50 @@
                   "type": "string"
                 }
               },
+              "comments": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "_id": {
+                      "type": "string",
+                      "example": "留言ID"
+                    },
+                    "user": {
+                      "type": "object",
+                      "properties": {
+                        "_id": {
+                          "type": "string",
+                          "example": "會員ID"
+                        },
+                        "name": {
+                          "type": "string",
+                          "example": "會員名"
+                        },
+                        "photo": {
+                          "type": "string",
+                          "example": "頭貼網址"
+                        }
+                      }
+                    },
+                    "post": {
+                      "type": "string",
+                      "example": "貼文ID"
+                    },
+                    "comment": {
+                      "type": "string",
+                      "example": "留言內容"
+                    },
+                    "createdAt": {
+                      "type": "string",
+                      "example": "留言時間"
+                    }
+                  }
+                }
+              },
               "createdAt": {
                 "type": "string",
-                "example": "按讚貼文時間"
+                "example": "貼文建立時間"
               }
             }
           }
@@ -1317,6 +1358,94 @@
               "createdAt": {
                 "type": "string",
                 "example": "按讚貼文時間"
+              },
+              "post": {
+                "type": "object",
+                "properties": {
+                  "_id": {
+                    "type": "string",
+                    "example": "貼文ID"
+                  },
+                  "user": {
+                    "type": "object",
+                    "properties": {
+                      "_id": {
+                        "type": "string",
+                        "example": "會員ID"
+                      },
+                      "name": {
+                        "type": "string",
+                        "example": "會員名"
+                      },
+                      "photo": {
+                        "type": "string",
+                        "example": "頭貼網址"
+                      }
+                    }
+                  },
+                  "content": {
+                    "type": "string",
+                    "example": "貼文內容"
+                  },
+                  "image": {
+                    "type": "string",
+                    "example": "圖片網址"
+                  },
+                  "likes": {
+                    "type": "array",
+                    "example": [
+                      "會員ID"
+                    ],
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "comments": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "_id": {
+                          "type": "string",
+                          "example": "留言ID"
+                        },
+                        "user": {
+                          "type": "object",
+                          "properties": {
+                            "_id": {
+                              "type": "string",
+                              "example": "會員ID"
+                            },
+                            "name": {
+                              "type": "string",
+                              "example": "會員名"
+                            },
+                            "photo": {
+                              "type": "string",
+                              "example": "頭貼網址"
+                            }
+                          }
+                        },
+                        "post": {
+                          "type": "string",
+                          "example": "貼文ID"
+                        },
+                        "comment": {
+                          "type": "string",
+                          "example": "留言內容"
+                        },
+                        "createdAt": {
+                          "type": "string",
+                          "example": "留言時間"
+                        }
+                      }
+                    }
+                  },
+                  "createdAt": {
+                    "type": "string",
+                    "example": "貼文建立時間"
+                  }
+                }
               }
             }
           }
@@ -1631,23 +1760,6 @@
                 "_id": {
                   "type": "string",
                   "example": "貼文ID"
-                },
-                "user": {
-                  "type": "object",
-                  "properties": {
-                    "_id": {
-                      "type": "string",
-                      "example": "會員ID"
-                    },
-                    "name": {
-                      "type": "string",
-                      "example": "會員名"
-                    },
-                    "photo": {
-                      "type": "string",
-                      "example": "頭貼網址"
-                    }
-                  }
                 },
                 "content": {
                   "type": "string",
