@@ -31,17 +31,10 @@ exports.isAuth = catchAsync(async(req, res, next) => {
   const data = await User.findById(decoded.id);
   if (!data) return appError({statusCode: 401, message: '尚未登入!'}, next);
 
-  const { _id, name, email, photo, sex } = data;
-  const currentUser = {
-    _id: _id.toString(),
-    name, email, photo, sex
-  }
+  req.userId = data._id.toString();
 
-  req.user = currentUser;
 
   next();
-
-  // jwt.verify 本身沒有提供 Promise 是 callBack，增加 new Promise 防止阻塞問題
 });
 
 exports.generateSendJWT = (user, res) => {

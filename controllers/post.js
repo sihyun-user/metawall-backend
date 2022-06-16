@@ -56,7 +56,10 @@ exports.getOnePost = catchAsync(async(req, res, next) => {
 // 新增一則貼文 API
 exports.createPost = catchAsync(async(req, res, next) => {
   let { content, image } = req.body;
-
+  // 資料欄位正確
+  if (!content) {
+    return appError(apiState.DATA_MISSING, next);
+  };
   // 貼文內容不為空
   content = content.trim();
   if (!content) {
@@ -64,7 +67,7 @@ exports.createPost = catchAsync(async(req, res, next) => {
   };
 
   let data = await Post.create({
-    user: req.user._id, 
+    user: req.userId, 
     content, 
     image
   });
@@ -76,17 +79,24 @@ exports.createPost = catchAsync(async(req, res, next) => {
 
 // 編輯一則貼文 API
 exports.updatePost = catchAsync(async(req, res, next) => {
-  const userId = req.user._id;
+  const userId = req.userId;
   const postId = req.params.post_id;
   let { image, content } = req.body;
-
+  // 資料欄位正確
+  if (!content) {
+    return appError(apiState.DATA_MISSING, next);
+  };
   // 貼文內容不為空
   content = content.trim();
   if (!content) {
     return appError({statusCode: 400, message:'貼文內容不為空'}, next);
   };
 
+  //TODO:fix
   const checkPost = await Post.findById(postId).exec();
+  if (!checkPost) {
+    return appError(apiState.DATA_NOT_FOUND, next);
+  }
   if (checkPost.user !== userId) {
     return appError({statusCode: 400, message:'你無法編輯此則貼文'}, next);
   };
@@ -103,10 +113,13 @@ exports.updatePost = catchAsync(async(req, res, next) => {
 
 // 刪除一則貼文 API
 exports.deleteOnePost = catchAsync(async(req, res, next) => {
-  const userId = req.user._id;
+  const userId = req.userId;
   const postId = req.params.post_id;
 
   const checkPost = await Post.findById(postId).exec();
+  if (!checkPost ) {
+    return appError(apiState.DATA_NOT_FOUND, next);
+  }
   if (checkPost.user !== userId) {
     return appError({statusCode: 400, message:'你無法刪除此則貼文'}, next);
   };
@@ -122,7 +135,7 @@ exports.addPostLike = catchAsync(async(req, res, next) => {
   const postId = req.params.post_id;
 
   const data = await Post.findOneAndUpdate({ _id: postId }, {
-    $addToSet: { likes: req.user._id }
+    $addToSet: { likes: req.userId }
   },{new: true, runValidators: true}).exec();
 
   if (!data) return appError(apiState.DATA_NOT_FOUND, next);
@@ -135,7 +148,7 @@ exports.canclePostLike = catchAsync(async(req, res, next) => {
   const postId = req.params.post_id;
 
   const data = await Post.findOneAndUpdate({ _id: postId }, {
-    $pull: { likes: req.user._id }
+    $pull: { likes: req.userId }
   }).exec();
 
   if (!data) return appError(apiState.DATA_NOT_FOUND, next);
@@ -145,7 +158,7 @@ exports.canclePostLike = catchAsync(async(req, res, next) => {
 
 // 新增一則貼文的留言 API 
 exports.craetePostComment = catchAsync(async(req, res, next) => {
-  const userId = req.user._id;
+  const userId = req.userId;
   const postId =  req.params.post_id;
   let { comment } = req.body;
 

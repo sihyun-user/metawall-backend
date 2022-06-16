@@ -16,13 +16,13 @@ const checkPassword = (password) => {
 
 // 註冊 API
 exports.signup = catchAsync(async(req, res, next) => {
-  let { email, password, confirmPassword, name } = req.body;
-  // 暱稱不為空
-  name = name.trim();
-  if (!name) {
-    return appError({statusCode: 400, message:'暱稱不為空'}, next);
+  let { name, email, password, confirmPassword } = req.body;
+  // 資料欄位正確
+  if (!name || !email || !password ||  !confirmPassword) {
+    return appError(apiState.DATA_MISSING, next);
   };
   // 暱稱2個字元以上
+  name = name.trim();
   if (!validator.isLength(name, {min:2})) {
     return appError({statusCode: 400, message:'暱稱字數低於2碼'}, next);
   };
@@ -54,6 +54,10 @@ exports.signup = catchAsync(async(req, res, next) => {
 // 登入 API
 exports.login = catchAsync(async(req, res, next) => {
   let { email, password } = req.body;
+  // 資料欄位正確
+  if (!email || !password) {
+    return appError(apiState.DATA_MISSING, next);
+  };
   // 是否為Email
   if (!validator.isEmail(email)) {
     return appError({statusCode: 400, message:'E-mail格式錯誤'}, next);
@@ -90,10 +94,14 @@ exports.login = catchAsync(async(req, res, next) => {
 // 更新密碼 API
 exports.updatePassword = catchAsync(async(req, res, next) => {
   const { password, confirmPassword } = req.body;
+  // 資料欄位正確
+  if (!password || !confirmPassword) {
+    return appError(apiState.DATA_MISSING, next);
+  };
   // 密碼驗證
   if (!checkPassword(password)) {
     return appError({statusCode: 400, message:'密碼需8位含或以上的字母數字'}, next);
-  }
+  };
   // 密碼正確
   if (password !== confirmPassword) {
     return appError({statusCode: 400, message:'密碼不一致'}, next);
@@ -101,7 +109,7 @@ exports.updatePassword = catchAsync(async(req, res, next) => {
   // 加密密碼
   newPassword = await bcrypt.hash(password, 8);
 
-  await User.findByIdAndUpdate(req.user._id, {
+  await User.findByIdAndUpdate(req.userId, {
     password: newPassword
   }).exec();
 
@@ -110,20 +118,25 @@ exports.updatePassword = catchAsync(async(req, res, next) => {
 
 // 取得會員資料 API
 exports.getProfile = catchAsync(async(req, res, next) => {
-  const data = { user: req.user };
+  const userId = req.userId;
+
+  const user = await User.findById(userId)
+  .select('_id name email photo sex').exec();
+
+  const data = { user: user };
   appSuccess({res, data, message: '取得會員資料成功'});
 });
 
 // 編輯會員資料 API
 exports.updateProfile = catchAsync(async(req, res, next) => {
-  const userId = req.user._id;
-  let { name, sex, photo } = req.body;
-  // 暱稱不為空
-  name = name.trim();
-  if (!name) {
-    return appError({statusCode: 400, message:'暱稱不為空'}, next);
+  const userId = req.userId;
+  let { name, photo, sex } = req.body;
+  // 資料欄位正確
+  if (!name || !photo || !sex) {
+    return appError(apiState.DATA_MISSING, next);
   };
   // 暱稱2個字元以上
+  name = name.trim();
   if (!validator.isLength(name, {min:2})) {
     return appError({statusCode: 400, message:'暱稱字數低於2碼'}, next);
   };
@@ -145,21 +158,20 @@ exports.updateProfile = catchAsync(async(req, res, next) => {
 // 取得個人動態牆 API
 exports.getProfileWall = catchAsync(async(req, res, next) => {
   const userID = req.params.user_id;
-
-  const user = await User.findById(userID)
-  .select('-followers._id -following._id')
+  
+  const user = await User.findById(userID).select('-email -sex')
   .populate({ 
     path: 'following.user followers.user', 
     select: 'name photo' 
-  });
+  }).select('-following._id -followers._id')
+
   if (!user) return appError(apiState.DATA_NOT_FOUND, next);
 
-  const posts = await Post.find({ user: userID }).populate({
-    path: 'user',
-    select: 'name photo'
-  }).populate({
+  const posts = await Post.find({ user: userID }).select('-user')
+  .populate({
     path: 'comments'
-  }).exec();
+  })
+  .exec();
 
   const data = { user, posts };
   
@@ -169,24 +181,28 @@ exports.getProfileWall = catchAsync(async(req, res, next) => {
 // 取得個人按讚名單 API
 exports.getLikePostList = catchAsync(async(req, res, next) => {
   const data = await Post.find({
-    likes: { $in: [req.user._id] }
+    likes: { $in: [req.userId] }
   })
   .populate({
     path: 'user',
     select: 'name photo'
-  }).exec();
+  })
+  .populate({
+    path: 'comments'
+  })
+  .exec();
 
   appSuccess({ res, data, message: '取得按讚名單成功' });
 });
 
 // 取得個人追蹤名單 API
 exports.getFollowUserList = catchAsync(async(req, res, next) => {
-  const follow = await User.findById(req.user._id)
-  .select('-_id following.user following.createdAt')
+  const follow = await User.findById(req.userId)
   .populate({ 
     path: 'following.user', 
     select: 'name photo' 
-  });
+  })
+  .select('-following._id');
 
   const data = follow.following
   
@@ -195,38 +211,30 @@ exports.getFollowUserList = catchAsync(async(req, res, next) => {
 
 // 取得個人留言名單 API
 exports.getCommentPostList = catchAsync(async(req, res, next) => {
-  const user = req.user._id;
-  const data = await Comment.find({ user }).select('-user').exec();
+  const user = req.userId;
+  const data = await Comment.find({ user }).select('-user')
+  .populate({
+    path: 'post',
+    populate: {
+      path: 'user comments',
+      select: '-followers -following -email -sex',
+    },
+    select: '-followers -following'
+  })
+  .exec();
   
   appSuccess({ res, data, message: '取得留言名單成功' });
 });
 
-// 刪除一則個人留言 API
-exports.canclePostComment = catchAsync(async(req, res, next) => {
-  const userId = req.user._id;
-  const commentId =  req.params.comment_id;
-
-  const data = await Comment.findById(commentId).exec();
-  if (!data) {
-    return appError(apiState.DATA_NOT_FOUND, next);
-  };
-
-  const commentUId = [data.user._id].toString();
-  if (commentUId !== userId) {
-    return appError({statusCode: 400, message:'你無法刪除此則留言'}, next);
-  };
-
-  await Comment.findByIdAndDelete(commentId).exec();
-
-  appSuccess({ res, message: '刪除貼文留言成功' });
-});
-
 // 編輯一則個人留言 API
 exports.updatePostComment = catchAsync(async(req, res, next) => {
-  const userId = req.user._id;
+  const userId = req.userId;
   const commentId =  req.params.comment_id;
   let { comment } = req.body;
-
+  // 資料欄位正確
+  if (!comment) {
+    return appError(apiState.DATA_MISSING, next);
+  }
   // 貼文留言不為空
   comment = comment.trim();
   if (!comment) {
@@ -250,9 +258,29 @@ exports.updatePostComment = catchAsync(async(req, res, next) => {
   appSuccess({ res, message: '編輯貼文留言成功' });
 });
 
+// 刪除一則個人留言 API
+exports.canclePostComment = catchAsync(async(req, res, next) => {
+  const userId = req.userId;
+  const commentId =  req.params.comment_id;
+
+  const data = await Comment.findById(commentId).exec();
+  if (!data) {
+    return appError(apiState.DATA_NOT_FOUND, next);
+  };
+
+  const commentUId = [data.user._id].toString();
+  if (commentUId !== userId) {
+    return appError({statusCode: 400, message:'你無法刪除此則留言'}, next);
+  };
+
+  await Comment.findByIdAndDelete(commentId).exec();
+
+  appSuccess({ res, message: '刪除貼文留言成功' });
+});
+
 // 追蹤朋友 API
 exports.followUser = catchAsync(async(req, res, next) => {
-  const userId = req.user._id;
+  const userId = req.userId;
   const followId = req.params.user_id
 
   if (userId === followId) {
@@ -291,7 +319,7 @@ exports.followUser = catchAsync(async(req, res, next) => {
 
 // 取消追蹤朋友 API
 exports.unfollowUser = catchAsync(async(req, res, next) => {
-  const userId = req.user._id;
+  const userId = req.userId;
   const followId = req.params.user_id
 
   if (userId === followId) {
