@@ -896,7 +896,7 @@
                 },
                 "message": {
                   "type": "string",
-                  "example": "貼文留言成功"
+                  "example": "新增貼文留言成功"
                 }
               },
               "xml": {
