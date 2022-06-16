@@ -9,28 +9,34 @@ const appError = require('../service/appError');
 const apiState = require('../service/apiState'); 
 const { checkId, generateSendJWT } = require('../service/appVerify');
 
+const checkPassword = (password) => {
+  const check = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
+  return check.test(password);
+}
+
 // 註冊 API
 exports.signup = catchAsync(async(req, res, next) => {
   let { email, password, confirmPassword, name } = req.body;
-  // 內容不為空
-  if (!email || !password || !confirmPassword || !name) {
-    return appError(apiState.DATA_MISSING, next);
+  // 暱稱不為空
+  name = name.trim();
+  if (!name) {
+    return appError({statusCode: 400, message:'暱稱不為空'}, next);
   };
   // 暱稱2個字元以上
   if (!validator.isLength(name, {min:2})) {
     return appError({statusCode: 400, message:'暱稱字數低於2碼'}, next);
   };
-  // 密碼正確
-  if (password !== confirmPassword) {
-    return appError({statusCode: 400, message:'密碼不一致'}, next);
-  };
-  // 密碼8碼以上
-  if (!validator.isLength(password, {min:8})) {
-    return appError({statusCode: 400, message:'密碼字數低於8碼'}, next);
-  };
   // 是否為Email
   if (!validator.isEmail(email)) {
     return appError({statusCode: 400, message:'E-mail格式錯誤'}, next);
+  };
+  // 密碼驗證
+  if (!checkPassword(password)) {
+    return appError({statusCode: 400, message:'密碼需8位含或以上的字母數字'}, next);
+  }
+  // 密碼正確
+  if (password !== confirmPassword) {
+    return appError({statusCode: 400, message:'密碼不一致'}, next);
   };
   // 信箱不重複
   const data = await User.findOne({email}).exec();
@@ -48,18 +54,14 @@ exports.signup = catchAsync(async(req, res, next) => {
 // 登入 API
 exports.login = catchAsync(async(req, res, next) => {
   let { email, password } = req.body;
-  // 內容不為空
-  if (!email || !password) {
-    return appError(apiState.DATA_MISSING, next);
-  }
   // 是否為Email
   if (!validator.isEmail(email)) {
     return appError({statusCode: 400, message:'E-mail格式錯誤'}, next);
   };
-  // 密碼8碼以上
-  if (!validator.isLength(password, {min:8})) {
-    return appError({statusCode: 400, message:'密碼字數低於8碼'}, next);
-  };
+  // 密碼驗證
+  if (!checkPassword(password)) {
+    return appError({statusCode: 400, message:'密碼需8位含或以上的字母數字'}, next);
+  }
 
   const user = await User.findOne({ email }).select('+password').exec();
   if (!user) return appError({statusCode: 400, message:'E-mail帳號錯誤'}, next);
@@ -84,19 +86,15 @@ exports.login = catchAsync(async(req, res, next) => {
 // 更新密碼 API
 exports.updatePassword = catchAsync(async(req, res, next) => {
   const { password, confirmPassword } = req.body;
-  // 內容不為空
-  if (!password || !confirmPassword) {
-    return appError(apiState.DATA_MISSING, next);
-  };
+  // 密碼驗證
+  if (!checkPassword(password)) {
+    return appError({statusCode: 400, message:'密碼需8位含或以上的字母數字'}, next);
+  }
   // 密碼正確
   if (password !== confirmPassword) {
     return appError({statusCode: 400, message:'密碼不一致'}, next);
   };
-  // 密碼8碼以上
-  if (!validator.isLength(password, {min:8})) {
-    return appError({statusCode: 400, message:'密碼字數低於8碼'}, next);
-  };
-
+  // 加密密碼
   newPassword = await bcrypt.hash(password, 8);
 
   await User.findByIdAndUpdate(req.user._id, {
