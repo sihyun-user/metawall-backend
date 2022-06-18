@@ -242,7 +242,7 @@ exports.updatePostComment = catchAsync(async(req, res, next) => {
     return appError(apiState.DATA_MISSING, next);
   }
   // 貼文留言不為空
-  if (!validator.isEmpty(comment.trim())) {
+  if (validator.isEmpty(comment.trim())) {
     return appError({statusCode: 400, message:'貼文留言不為空'}, next);
   };
 
