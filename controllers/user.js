@@ -177,7 +177,7 @@ exports.getProfileWall = catchAsync(async(req, res, next) => {
   .populate({
     path: 'comments'
   })
-  .exec();
+  .sort('-createdAt').exec();
 
   const data = { user, posts };
   
@@ -196,7 +196,7 @@ exports.getLikePostList = catchAsync(async(req, res, next) => {
   .populate({
     path: 'comments'
   })
-  .exec();
+  .sort('-createdAt').exec();
 
   appSuccess({ res, data, message: '取得按讚名單成功' });
 });
@@ -208,7 +208,7 @@ exports.getFollowUserList = catchAsync(async(req, res, next) => {
     path: 'following.user', 
     select: 'name photo' 
   })
-  .select('-following._id');
+  .sort('-createdAt').select('-following._id');
 
   const data = follow.following
   
@@ -227,7 +227,7 @@ exports.getCommentPostList = catchAsync(async(req, res, next) => {
     },
     select: '-followers -following'
   })
-  .exec();
+  .sort('-createdAt').exec();
   
   appSuccess({ res, data, message: '取得留言名單成功' });
 });
