@@ -16,7 +16,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{   \"name\": \"sihyun\",\r\n    \"email\": \"sihyun@gmail.com\",\r\n    \"password\": \"sihyun123456\",\r\n    \"confirmPassword\": \"sihyun123456\"\r\n}",
+							"raw": "{   \"name\": \"green\",\r\n    \"email\": \"green@gmail.com\",\r\n    \"password\": \"green123456\",\r\n    \"confirmPassword\": \"green123456\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -76,7 +76,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"password\": \"yuri123456\",\r\n    \"confirmPassword\": \"yuri123456\"\r\n}",
+							"raw": "{\r\n    \"password\": \"green123456\",\r\n    \"confirmPassword\": \"green123456\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -145,7 +145,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"name\": \"yuri\",\r\n    \"sex\": \"female\",\r\n    \"photo\": \"https://i.imgur.com/EmkzRND.jpg\"\r\n}",
+							"raw": "{\r\n    \"name\": \"green\",\r\n    \"sex\": \"male\",\r\n    \"photo\": \"https://i.imgur.com/zaHfSxu.png\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -164,14 +164,9 @@
 						}
 					},
 					"response": []
-				}
-			]
-		},
-		{
-			"name": "會員留言按讚追蹤",
-			"item": [
+				},
 				{
-					"name": "取得個人貼文名單",
+					"name": "取得個人動態牆",
 					"protocolProfileBehavior": {
 						"disableBodyPruning": true
 					},
@@ -194,21 +189,33 @@
 							}
 						},
 						"url": {
-							"raw": "{{url}}/user/profile/{{user_id}}",
+							"raw": "{{url}}/user/profileWall/{{user_id}}",
 							"host": [
 								"{{url}}"
 							],
 							"path": [
 								"user",
-								"profile",
+								"profileWall",
 								"{{user_id}}"
+							],
+							"query": [
+								{
+									"key": "q",
+									"value": "yama",
+									"disabled": true
+								}
 							]
 						}
 					},
 					"response": []
-				},
+				}
+			]
+		},
+		{
+			"name": "留言按讚追蹤",
+			"item": [
 				{
-					"name": "取得個人按讚名單",
+					"name": "取得個人留言名單",
 					"request": {
 						"method": "GET",
 						"header": [
@@ -219,13 +226,13 @@
 							}
 						],
 						"url": {
-							"raw": "{{url}}/user/likes",
+							"raw": "{{url}}/user/comments",
 							"host": [
 								"{{url}}"
 							],
 							"path": [
 								"user",
-								"likes"
+								"comments"
 							]
 						}
 					},
@@ -250,6 +257,30 @@
 							"path": [
 								"user",
 								"follows"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "取得個人按讚名單",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/user/likes",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"user",
+								"likes"
 							]
 						}
 					},
@@ -306,30 +337,6 @@
 					"response": []
 				},
 				{
-					"name": "取得個人留言名單",
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "{{token}}",
-								"type": "text"
-							}
-						],
-						"url": {
-							"raw": "{{url}}/user/comments",
-							"host": [
-								"{{url}}"
-							],
-							"path": [
-								"user",
-								"comments"
-							]
-						}
-					},
-					"response": []
-				},
-				{
 					"name": "編輯一則個人留言",
 					"request": {
 						"method": "PATCH",
@@ -342,7 +349,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"comment\": \"熱熱熱~~~~\"\r\n}",
+							"raw": "{\r\n    \"comment\": \"來杯下午茶嗎\"\r\n}   ",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -417,16 +424,11 @@
 							}
 						],
 						"body": {
-							"mode": "raw",
-							"raw": "",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
+							"mode": "formdata",
+							"formdata": []
 						},
 						"url": {
-							"raw": "{{url}}/posts?timeSort=asc",
+							"raw": "{{url}}/posts?timeSort=asc&q=",
 							"host": [
 								"{{url}}"
 							],
@@ -440,7 +442,11 @@
 								},
 								{
 									"key": "q",
-									"value": "星期五!",
+									"value": ""
+								},
+								{
+									"key": "userId",
+									"value": "{{user_id}}",
 									"disabled": true
 								}
 							]
@@ -497,7 +503,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{  \"content\": \"今天天氣好熱\",\r\n   \"image\": \"\"\r\n}",
+							"raw": "{  \"content\": \"貓貓~\",\r\n   \"image\": \"https://i.imgur.com/zaHfSxu.png\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -529,7 +535,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"content\": \"融化ing~\",\r\n  \"image\": \"\"\r\n}",
+							"raw": "{\r\n  \"content\": \"貓貓\",\r\n  \"image\": \"https://i.imgur.com/zaHfSxu.png\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -645,7 +651,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"comment\":\"融化了~\"\r\n}",
+							"raw": "{\r\n    \"comment\":\"喵~\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -712,7 +718,7 @@
 									"key": "image",
 									"contentType": "image/jpeg",
 									"type": "file",
-									"src": "/C:/Users/User/Desktop/pkthink-about-picture.jpg"
+									"src": "/C:/Users/User/Desktop/pika.jpg"
 								}
 							]
 						},
