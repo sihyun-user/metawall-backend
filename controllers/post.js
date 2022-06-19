@@ -131,16 +131,6 @@ exports.deleteOnePost = catchAsync(async(req, res, next) => {
   appSuccess({res, message:'刪除一則貼文成功'});
 });
 
-// 取得一則貼文的按讚 API
-exports.getPostLike = catchAsync(async(req, res, next) => {
-  const postId = req.params.post_id;
-
-  const data = await Post.findById(postId).select('-_id likes')
-  if (!data) return appError(apiState.DATA_NOT_FOUND, next);
-
-  appSuccess({ res, data, message: '取得貼文按讚成功' });
-});
-
 // 新增一則貼文的按讚 API
 exports.addPostLike = catchAsync(async(req, res, next) => {
   const postId = req.params.post_id;

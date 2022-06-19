@@ -121,24 +121,6 @@ router
 
 router
   .route('/post/:post_id/like')
-  .get(isAuth,
-    /*
-      #swagger.tags= ['Post - 貼文']
-      #swagger.description = '取得一則貼文的按讚 API'
-      #swagger.security = [{'api_key': ['apiKeyAuth']}]
-      #swagger.responses[200] = { 
-        description: '貼文資訊',
-        schema: { 
-          status: true,
-          message: '取得貼文按讚成功',
-          data: {
-            likes: ['會員ID']
-          }
-        }
-      }
-    */
-    PostControllers.getPostLike
-  )
   .post(isAuth, 
     /*
       #swagger.tags = ['Post - 貼文']

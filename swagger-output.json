@@ -785,62 +785,6 @@
       }
     },
     "/api/post/{post_id}/like": {
-      "get": {
-        "tags": [
-          "Post - 貼文"
-        ],
-        "description": "取得一則貼文的按讚 API",
-        "parameters": [
-          {
-            "name": "post_id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "貼文資訊",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "status": {
-                  "type": "boolean",
-                  "example": true
-                },
-                "message": {
-                  "type": "string",
-                  "example": "取得貼文按讚成功"
-                },
-                "data": {
-                  "type": "object",
-                  "properties": {
-                    "likes": {
-                      "type": "array",
-                      "example": [
-                        "會員ID"
-                      ],
-                      "items": {
-                        "type": "string"
-                      }
-                    }
-                  }
-                }
-              },
-              "xml": {
-                "name": "main"
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "api_key": [
-              "apiKeyAuth"
-            ]
-          }
-        ]
-      },
       "post": {
         "tags": [
           "Post - 貼文"
