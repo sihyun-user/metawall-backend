@@ -7,8 +7,8 @@ const upload = multer({
     fileSize: 2*1024*1024 // 限定2MB,
   },
   fileFilter(req, file, next) {
-    const ext = path.extname(file.originalname).toLowerCase();
     const fileSize = parseInt(req.headers['content-length']);
+    const ext = path.extname(file.originalname).toLowerCase();
     if (ext !== '.jpg' && ext !== '.png' && ext !== '.jpeg') {
       return appError({
         statusCode: 400, 

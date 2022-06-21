@@ -12,9 +12,9 @@ exports.getAllImage = catchAsync(async(req, res, next) => {
 
 // 上傳圖片
 exports.uploadImage = catchAsync(async(req, res, next) => {
-  if (!req.files.length) {
-    return appError({statusCode: 400, message:'尚未上傳檔案'}, next);
-  };
+  if (!req.files) {
+    return appError({statusCode: 400, message:'找不到檔案'}, next);
+  }
 
   const client = new ImgurClient({
     clientId: process.env.IMGUR_CLIENT_ID,
