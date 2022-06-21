@@ -17,7 +17,7 @@ router.get('/uploads', isAuth,
   UploadControllers.getAllImage
 );
 
-router.post('/upload', isAuth, upload,
+router.post('/upload', upload, isAuth,
   /*
     #swagger.tags = ['Upload - 圖片']
     #swagger.description = '上傳圖片 API'
