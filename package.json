@@ -6,7 +6,8 @@
     "start": "cross-env NODE_ENV=production node ./bin/www",
     "dev": "cross-env NODE_ENV=development nodemon ./bin/www",
     "prod": "cross-env NODE_ENV=production nodemon ./bin/www",
-    "swagger": "node ./swagger.js"
+    "swagger": "node ./swagger.js",
+    "ws": "nodemon ./webSocket/index.js"
   },
   "engines": {
     "node": "v16.x"
@@ -28,7 +29,8 @@
     "swagger-autogen": "^2.19.0",
     "swagger-ui-express": "^4.3.0",
     "tslib": "^2.4.0",
-    "validator": "^13.7.0"
+    "validator": "^13.7.0",
+    "ws": "^8.8.0"
   },
   "devDependencies": {
     "nodemon": "^2.0.16"
